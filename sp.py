@@ -10,7 +10,7 @@ entries = []
 work_file = "f.csv" 
 people_file = "people.csv"
 
-backup_directory = '/Users/migueldeluisespinosa/Dropbox/sppy/bu' #change to your own backup directory
+backup_directory = '/yourBackupPath' #change to your own backup directory (somewhere in your dropbox folder could be a neat idea)
 backup_file = backup_directory + "/" + "f_backup.csv"
 
 entryTypes = "entryTypes.csv"
