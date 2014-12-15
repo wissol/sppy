@@ -69,9 +69,7 @@ def append_new_entry_to_file(entry):
     # copy work back up file to a new time-stamped backup file
 
     temporal_backup_file = 'f_backup_'+ time.strftime("%d_%m_%Y_at_%H_%M")+ '.csv'
-
     shutil.copy2(backup_file,temporal_backup_file)
-
     shutil.move(temporal_backup_file,backup_directory)
 
     # append to work backup file
@@ -82,53 +80,43 @@ def append_new_entry_to_file(entry):
 
 def add_entry():    
     goOn = True
-    book = load_file(work_file)
-
+    
     while goOn:
         
-        entry = [] 
         # Entry -  date gathered 0 , type 1 , description 2 , context 3 , state 4 , date due 5 , person 6 , order 7 , notes 8
-        
-        #Date Gathered  0   
-
+        entry = [] 
+                
+        #Date Gathered  0
         entry.append(time.strftime("%d/%m/%Y %H:%M:%S"))
        
         #Type 1
-
         entry.append(choose_in_file(entryTypes))
 
         #Description 2
-
         entry.append(input("\n Description: \t").strip(' ').replace(",",";")) # commas replaced with semicolons.
 
-        # Context 3     
-        
+        # Context 3        
         entry.append(choose_in_file(contexts))
 
         # State 4
-
         entry.append(choose_in_file(states))
 
         # date due 5
-
         entry.append(filter_dates())
 
         # person 6
-
         entry.append(choose_in_file(people_file))
 
         # order 7
-
         entry.append("")
 
         # Notes 8
-
         entry.append(input("\n Write a note if needed: \t").strip(' ').replace(",","."))
 
-        # Append entry to entries
-        
-        append_new_entry_to_file(entry) 
+        # Append entry to entries        
+        append_new_entry_to_file(entry)
 
+        # Ending the loop
         goOn = input("\n Another entry? (n for no)\t")
         if goOn != "":
             if goOn[0].lower() == "n":
