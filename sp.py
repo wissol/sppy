@@ -1,6 +1,5 @@
 # Main Module
 
-# contexts
 import os
 import csv
 import shutil
