@@ -1,5 +1,3 @@
-# Main Module
-
 import os
 import csv
 import shutil
@@ -9,7 +7,7 @@ entries = []
 work_file = "f.csv" 
 people_file = "people.csv"
 
-backup_directory = '/yourBackupPath' #change to your own backup directory (somewhere in your dropbox folder could be a neat idea)
+backup_directory = '/Users/migueldeluisespinosa/Dropbox/sppy/bu' #change to your own backup directory
 backup_file = backup_directory + "/" + "f_backup.csv"
 
 entryTypes = "entryTypes.csv"
@@ -88,54 +86,44 @@ def add_entry():
 
     while goOn:
         
-        entry = ["","","","","","","","",""] 
+        entry = [] 
         # Entry -  date gathered 0 , type 1 , description 2 , context 3 , state 4 , date due 5 , person 6 , order 7 , notes 8
         
-        entry_key = 0       
-
         #Date Gathered  0   
 
-        entry[entry_key] = time.strftime("%d/%m/%Y %H:%M:%S")
-        entry_key += 1
-
+        entry.append(time.strftime("%d/%m/%Y %H:%M:%S"))
+       
         #Type 1
 
-        entry[entry_key] = choose_in_file(entryTypes)
-        entry_key += 1
+        entry.append(choose_in_file(entryTypes))
 
         #Description 2
 
-        entry[entry_key] = input("\n Description: \t").strip(' ').replace(",",";") # commas replaced with semicolons.
-        entry_key += 1
+        entry.append(input("\n Description: \t").strip(' ').replace(",",";")) # commas replaced with semicolons.
 
         # Context 3     
         
-        entry[entry_key] = choose_in_file(contexts)
-        entry_key += 1
+        entry.append(choose_in_file(contexts))
 
         # State 4
 
-        entry[entry_key] = choose_in_file(states)
-        entry_key += 1
+        entry.append(choose_in_file(states))
 
         # date due 5
 
-        entry[entry_key] = filter_dates()
-        entry_key += 1
+        entry.append(filter_dates())
 
         # person 6
 
-        entry[entry_key] = choose_in_file(people_file)
-        entry_key += 1
+        entry.append(choose_in_file(people_file))
 
         # order 7
 
-        entry[entry_key] = "" #to be implemented
-        entry_key += 1
+        entry.append("")
 
         # Notes 8
 
-        entry[entry_key] = input("\n Write a note if needed: \t").strip(' ').replace(",",".")
+        entry.append(input("\n Write a note if needed: \t").strip(' ').replace(",","."))
 
         # Append entry to entries
         
@@ -147,10 +135,3 @@ def add_entry():
                 goOn = False
 
 add_entry()
-
-# to do
-
-# menu 
-# 1 add new entry (done)
-# 2 filter entries 
-# 3 log work 
