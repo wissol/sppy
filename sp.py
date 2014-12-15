@@ -135,3 +135,10 @@ def add_entry():
                 goOn = False
 
 add_entry()
+
+# to do
+
+# menu 
+# 1 add new entry (done)
+# 2 filter entries 
+# 3 log work 
