@@ -3,16 +3,15 @@ import csv
 import shutil
 import time
 
-entries = []
-work_file = "f.csv" 
-people_file = "people.csv"
+settings_file = "s.csv"
 
+people_file = "people.csv"
+projects_file = "p.csv"
+tasks_file = "t.csv" 
 backup_directory = '/Users/migueldeluisespinosa/Dropbox/sppy/bu' #change to your own backup directory
 backup_file = backup_directory + "/" + "f_backup.csv"
-
-entryTypes = "entryTypes.csv"
-contexts = "contexts.csv" 
-states = "states.csv" 
+contexts_file = "contexts.csv" 
+states_file = "states.csv" # these values should be loaded from settings file
 
 
 def load_file(file_to_load): #loads a csv file as a list
@@ -63,43 +62,38 @@ def append_file(file_name,entries):
 def append_new_entry_to_file(entry):
     
     # add entries to file
-
     append_file(work_file,entry)
 
     # copy work back up file to a new time-stamped backup file
-
     temporal_backup_file = 'f_backup_'+ time.strftime("%d_%m_%Y_at_%H_%M")+ '.csv'
     shutil.copy2(backup_file,temporal_backup_file)
     shutil.move(temporal_backup_file,backup_directory)
 
-    # append to work backup file
-    
+    # append to work backup file    
     shutil.copy2(work_file,backup_file)
 
-    #shutil.move(backup_file,backup_directory)
-
-def add_entry():    
+def add_action():    
     goOn = True
     
     while goOn:
         
-        # Entry -  date gathered 0 , type 1 , description 2 , context 3 , state 4 , date due 5 , person 6 , order 7 , notes 8
+        # Entry -  date gathered 0 , Project 1 , description 2 , context 3 , state 4 , date due 5 , person 6 , order 7 , notes 8
         entry = [] 
                 
         #Date Gathered  0
         entry.append(time.strftime("%d/%m/%Y %H:%M:%S"))
-       
-        #Type 1
-        entry.append(choose_in_file(entryTypes))
 
+        #Project 1
+        # to be implemented
+       
         #Description 2
         entry.append(input("\n Description: \t").strip(' ').replace(",",";")) # commas replaced with semicolons.
 
         # Context 3        
-        entry.append(choose_in_file(contexts))
+        entry.append(choose_in_file(contexts_file))
 
         # State 4
-        entry.append(choose_in_file(states))
+        entry.append(choose_in_file(states_file))
 
         # date due 5
         entry.append(filter_dates())
@@ -113,8 +107,8 @@ def add_entry():
         # Notes 8
         entry.append(input("\n Write a note if needed: \t").strip(' ').replace(",","."))
 
-        # Append entry to entries        
-        append_new_entry_to_file(entry)
+        # Append entry to file      
+        append_new_entry_to_file(entry, tasks_file)
 
         # Ending the loop
         goOn = input("\n Another entry? (n for no)\t")
@@ -122,11 +116,22 @@ def add_entry():
             if goOn[0].lower() == "n":
                 goOn = False
 
-add_entry()
 
-# to do
+def main_menu():
+    
+    print("\n")
 
-# menu 
-# 1 add new entry (done)
-# 2 filter entries 
-# 3 log work 
+    for key in sorted(menu_choices):
+            print("Enter {} for {}".format(key,menu_choices[key]))
+
+    menu = input("\n Choose an option:\t").strip(" ,")  
+        
+    try:
+        return menu_choices[menu]
+    except KeyError:
+        print("Try again")
+        menu_choices(menu_choices)
+
+menu_choices = {"a":"Add new action", "p":"Add new Project", "l":"Log Work", "w":"Add co-worker", "c":"Add context", "h":"help"}
+
+main_menu(menu_choices)
