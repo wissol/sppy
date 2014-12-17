@@ -7,8 +7,8 @@ settings_file = "s.csv"
 
 people_file = "people.csv"
 projects_file = "p.csv"
-tasks_file = "t.csv" 
-backup_directory = '/Users/migueldeluisespinosa/Dropbox/sppy/bu' #change to your own backup directory
+actions_file = "a.csv" # next actions in GTD parlance
+backup_directory = '/Users/migueldeluisespinosa/Dropbox/sppy/bu' # change to your own backup directory
 backup_file = backup_directory + "/" + "f_backup.csv"
 contexts_file = "contexts.csv" 
 states_file = "states.csv" # these values should be loaded from settings file
@@ -59,7 +59,8 @@ def append_file(file_name,entries):
         writer = csv.writer(f)
         writer.writerow(entries)
 
-def append_new_entry_to_file(entry):
+def append_new_entry_to_file(entry): 
+    # to be split into two functions append_new_entry_to_file(new_entry, file) and backup_file(file)
     
     # add entries to file
     append_file(work_file,entry)
