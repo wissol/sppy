@@ -55,12 +55,12 @@ def choose_in_file(file_to_choose):
             g.close()
         return menu
 
-def append_file(file_name,entries):
+def append_file(file_name, entries):
     with open(file_name, 'a', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(entries)
 
-def append_new_entry_to_file(entry): 
+def append_new_entry_to_file(entry, work_file): 
     # to be split into two functions append_new_entry_to_file(new_entry, file) and backup_file(file)
     
     # add entries to file
@@ -86,7 +86,7 @@ def add_action():
         entry.append(time.strftime("%d/%m/%Y %H:%M:%S"))
 
         #Project 1
-        # to be implemented
+        entry.append(choose_in_file(projects_file))
        
         #Description 2
         entry.append(input("\n Description: \t").strip(' ').replace(",",";")) # commas replaced with semicolons.
@@ -110,7 +110,7 @@ def add_action():
         entry.append(input("\n Write a note if needed: \t").strip(' ').replace(",","."))
 
         # Append entry to file      
-        append_new_entry_to_file(entry, tasks_file)
+        append_new_entry_to_file(entry, actions_file)
 
         # Ending the loop
         goOn = input("\n Another entry? (n for no)\t")
@@ -119,21 +119,29 @@ def add_action():
                 goOn = False
 
 
-def main_menu():
+def select_command(menu_choices):
     
-    print("\n")
+    menu = input("\n Choose an option:\t")
 
-    for key in sorted(menu_choices):
-            print("Enter {} for {}".format(key,menu_choices[key]))
-
-    menu = input("\n Choose an option:\t").strip(" ,")  
-        
     try:
         return menu_choices[menu]
     except KeyError:
-        print("Try again")
-        menu_choices(menu_choices)
+        print("\n Try again")
+        select_command(menu_choices)
 
-menu_choices = {"a":"Add new action", "p":"Add new Project", "l":"Log Work", "w":"Add co-worker", "c":"Add context", "h":"help"}
+def menu(menu_choices):
 
-main_menu(menu_choices)
+    print("\n Menu")
+    print(" ====")
+
+    for key in menu_choices:
+            print("\t{}\t{}".format(key,menu_choices[key]))
+
+    command = select_command(menu_choices)
+
+    if command == "Add new action":
+        add_action()
+
+commands = {"a":"Add new action", "p":"Add new Project", "l":"Log Work", "w":"Add co-worker", "c":"Add context", "h":"help"} # move to settings ?
+
+menu(commands)
