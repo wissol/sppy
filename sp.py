@@ -13,6 +13,7 @@ backup_file = backup_directory + "/" + "f_backup.csv"
 contexts_file = "contexts.csv" 
 states_file = "states.csv" # these values should be loaded from settings file
 
+# def load_settings(settings_file): to do
 
 def load_file(file_to_load): #loads a csv file as a list
     csv_file_as_list = []
