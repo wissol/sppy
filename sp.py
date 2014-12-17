@@ -1,7 +1,4 @@
-import os
-import csv
-import shutil
-import time
+import os, csv, shutil, time
 
 settings_file = "s.csv"
 
@@ -11,9 +8,14 @@ actions_file = "a.csv" # next actions in GTD parlance
 backup_directory = '/Users/migueldeluisespinosa/Dropbox/sppy/bu' # change to your own backup directory
 backup_file = backup_directory + "/" + "f_backup.csv"
 contexts_file = "contexts.csv" 
-states_file = "states.csv" # these values should be loaded from settings file
+states_file = "states.csv" 
+# time_zone = load from settings file
+
+# all these values should be loaded from settings file and stored into some structure
 
 # def load_settings(settings_file): to do
+
+# def setup(): to do
 
 def load_file(file_to_load): #loads a csv file as a list
     csv_file_as_list = []
@@ -80,40 +82,70 @@ def add_action():
     while goOn:
         
         # Entry -  date gathered 0 , Project 1 , description 2 , context 3 , state 4 , date due 5 , person 6 , order 7 , notes 8
-        entry = [] 
+        action = [] 
                 
         #Date Gathered  0
-        entry.append(time.strftime("%d/%m/%Y %H:%M:%S"))
+        action.append(time.strftime("%d/%m/%Y %H:%M:%S"))
 
         #Project 1
-        entry.append(choose_in_file(projects_file))
+        action.append(choose_in_file(projects_file))
        
         #Description 2
-        entry.append(input("\n Description: \t").strip(' ').replace(",",";")) # commas replaced with semicolons.
+        action.append(input("\n Description: \t").strip(' ').replace(",",";")) # commas replaced with semicolons.
 
         # Context 3        
-        entry.append(choose_in_file(contexts_file))
+        action.append(choose_in_file(contexts_file))
 
         # State 4
-        entry.append(choose_in_file(states_file))
+        action.append(choose_in_file(states_file))
 
         # date due 5
-        entry.append(filter_dates())
+        action.append(filter_dates())
 
         # person 6
-        entry.append(choose_in_file(people_file))
+        action.append(choose_in_file(people_file))
 
         # order 7
-        entry.append("")
+        action.append("")
 
         # Notes 8
-        entry.append(input("\n Write a note if needed: \t").strip(' ').replace(",","."))
+        action.append(input("\n Write a note if needed: \t").strip(' ').replace(",","."))
 
-        # Append entry to file      
-        append_new_entry_to_file(entry, actions_file)
+        # Append action to file      
+        append_new_entry_to_file(action, actions_file)
 
         # Ending the loop
-        goOn = input("\n Another entry? (n for no)\t")
+        goOn = input("\n Another action? (n for no)\t")
+        if goOn != "":
+            if goOn[0].lower() == "n":
+                goOn = False
+
+def add_project():
+    goOn = True
+
+    while goOn:
+        
+        # Project -  description 0, date gathered 1, date due 2, notes 3
+        project = [] 
+
+        #Description 0
+        project.append(input("\n Description: \t").strip(' ').replace(",",";")) # commas replaced with semicolons.
+        # check there's no project with the same description
+
+        #Date Gathered  1
+        project.append(time.strftime("%d/%m/%Y %H:%M:%S"))
+
+        # date due 2
+        project.append(filter_dates())
+
+        # Notes 3
+        project.append(input("\n Write a note if needed: \t").strip(' ').replace(",","."))
+
+        # Append entry to file      
+        append_new_entry_to_file(project, projects_file)
+
+        # Ending the loop
+        goOn = input("\n Another project? (n for no)\t")
         if goOn != "":
             if goOn[0].lower() == "n":
                 goOn = False
@@ -141,6 +173,8 @@ def menu(menu_choices):
 
     if command == "Add new action":
         add_action()
+    elif command == "Add new Project":
+        add_project()
 
 commands = {"a":"Add new action", "p":"Add new Project", "l":"Log Work", "w":"Add co-worker", "c":"Add context", "h":"help"} # move to settings ?
 
