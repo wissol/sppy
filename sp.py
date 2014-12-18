@@ -1,6 +1,6 @@
 import os, csv, shutil, time
 
-# import argparse https://docs.python.org/dev/library/argparse.html 
+import argparse # https://docs.python.org/dev/library/argparse.html 
 # (being considered so to be able to do stuff from the command line)
 
 settings_file = "s.csv"
@@ -181,4 +181,10 @@ def menu(menu_choices):
 
 commands = {"a":"Add new action", "p":"Add new Project", "l":"Log Work", "w":"Add co-worker", "c":"Add context", "h":"help"} # move to settings ?
 
-menu(commands)
+# menu(commands)
+
+parser = argparse.ArgumentParser(description='Simple personal poductivity app')
+
+parser.add_argument("--aa", help="add action")
+args = parser.parse_args()
+print(args)
