@@ -1,5 +1,8 @@
 import os, csv, shutil, time
 
+# import argparse https://docs.python.org/dev/library/argparse.html 
+# (being considered so to be able to do stuff from the command line)
+
 settings_file = "s.csv"
 
 people_file = "people.csv"
