@@ -1,7 +1,5 @@
 import os, csv, shutil, time
-
 import argparse # https://docs.python.org/dev/library/argparse.html 
-# (being considered so to be able to do stuff from the command line)
 
 settings_file = "s.csv"
 
@@ -153,38 +151,14 @@ def add_project():
             if goOn[0].lower() == "n":
                 goOn = False
 
-
-def select_command(menu_choices):
-    
-    menu = input("\n Choose an option:\t")
-
-    try:
-        return menu_choices[menu]
-    except KeyError:
-        print("\n Try again")
-        select_command(menu_choices)
-
-def menu(menu_choices):
-
-    print("\n Menu")
-    print(" ====")
-
-    for key in menu_choices:
-            print("\t{}\t{}".format(key,menu_choices[key]))
-
-    command = select_command(menu_choices)
-
-    if command == "Add new action":
-        add_action()
-    elif command == "Add new Project":
-        add_project()
-
-commands = {"a":"Add new action", "p":"Add new Project", "l":"Log Work", "w":"Add co-worker", "c":"Add context", "h":"help"} # move to settings ?
-
-# menu(commands)
-
 parser = argparse.ArgumentParser(description='Simple personal poductivity app')
 
-parser.add_argument("--aa", help="add action")
+parser.add_argument("-aa", action='store_true', help="add a new action")
+parser.add_argument("-ap", action='store_true', help="add a new project")
+
 args = parser.parse_args()
-print(args)
+
+if args.aa == True:
+    add_action()
+elif args.ap == True:
+    add_project()
