@@ -1,5 +1,7 @@
 import os, csv, shutil, time
+
 import argparse # https://docs.python.org/dev/library/argparse.html 
+# (being considered so to be able to do stuff from the command line)
 
 settings_file = "s.csv"
 
@@ -151,14 +153,49 @@ def add_project():
             if goOn[0].lower() == "n":
                 goOn = False
 
-parser = argparse.ArgumentParser(description='Simple personal poductivity app')
 
-parser.add_argument("-aa", action='store_true', help="add a new action")
-parser.add_argument("-ap", action='store_true', help="add a new project")
+def add_context():
+    goOn = True
+    
+    while goOn:
+        context = []
 
-args = parser.parse_args()
+        #Name
+        context.append(input("\n Name: \t").strip(' ').replace(",",";"))
 
-if args.aa == True:
-    add_action()
-elif args.ap == True:
-    add_project()
+        #Description
+        context.append(input("\n Description: \t").strip(' ').replace(",",";"))
+
+        # Append entry to file      
+        append_new_entry_to_file(context, contexts_file)
+
+        # Ending the loop
+        goOn = input("\n Another context? (n for no)\t")
+        if goOn != "":
+            if goOn[0].lower() == "n":
+                goOn = False
+
+def show_actions(filter):
+    #to do
+
+def argument_parser():
+    parser = argparse.ArgumentParser(description='Simple personal poductivity app')
+
+    parser.add_argument("-aa", action='store_true', help="add a new action")
+    parser.add_argument("-ap", action='store_true', help="add a new project")
+    parser.add_argument("-ac", action='store_true', help="add a new context")
+    parser.add_argument("-sat", action='store_true', help="show pending actions")
+    parser.add_argument("-satc", action='store_true', help="show actions to-do by context")
+
+    args = parser.parse_args()
+
+    if args.aa == True:
+        add_action()
+    elif args.ap == True:
+        add_project()
+    elif args.ac == True:
+        add_context()
+    elif args.sat == True:
+        show_actions("todo")
+    else:
+        print("menu") #placeholder: an interactive menu should be called from here.
