@@ -1,7 +1,6 @@
 import os, csv, shutil, time
 
 import argparse # https://docs.python.org/dev/library/argparse.html 
-# (being considered so to be able to do stuff from the command line)
 
 settings_file = "s.csv"
 
@@ -65,14 +64,14 @@ def append_file(file_name, entries):
         writer = csv.writer(f)
         writer.writerow(entries)
 
-def append_new_entry_to_file(entry, work_file): 
+def append_new_entry_to_file(entry, work_file, backup_file): 
     # to be split into two functions append_new_entry_to_file(new_entry, file) and backup_file(file)
     
     # add entries to file
     append_file(work_file,entry)
 
     # copy work back up file to a new time-stamped backup file
-    temporal_backup_file = 'f_backup_'+ time.strftime("%d_%m_%Y_at_%H_%M")+ '.csv'
+    temporal_backup_file = backup_file + time.strftime("%d_%m_%Y_at_%H_%M")+ '.csv'
     shutil.copy2(backup_file,temporal_backup_file)
     shutil.move(temporal_backup_file,backup_directory)
 
@@ -106,7 +105,10 @@ def add_action():
         action.append(filter_dates())
 
         # person 6
-        action.append(choose_in_file(people_file))
+        if action[4] == "waiting for" or action[4] == "assigned to":
+            action.append(choose_in_file(people_file))
+        else:
+            action.append("")
 
         # order 7
         action.append("")
@@ -116,6 +118,8 @@ def add_action():
 
         # Append action to file      
         append_new_entry_to_file(action, actions_file)
+
+        #offer to add reminder?
 
         # Ending the loop
         goOn = input("\n Another action? (n for no)\t")
@@ -175,8 +179,9 @@ def add_context():
             if goOn[0].lower() == "n":
                 goOn = False
 
-def show_actions(filter):
+def show_actions(filter_thing):
     #to do
+    return filter_thing
 
 def argument_parser():
     parser = argparse.ArgumentParser(description='Simple personal poductivity app')
@@ -186,6 +191,7 @@ def argument_parser():
     parser.add_argument("-ac", action='store_true', help="add a new context")
     parser.add_argument("-sat", action='store_true', help="show pending actions")
     parser.add_argument("-satc", action='store_true', help="show actions to-do by context")
+    parser.add_argument("-ar", action='store_true', help="add reminder")
 
     args = parser.parse_args()
 
@@ -199,3 +205,5 @@ def argument_parser():
         show_actions("todo")
     else:
         print("menu") #placeholder: an interactive menu should be called from here.
+
+argument_parser()
