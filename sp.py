@@ -219,15 +219,24 @@ def filter_file(value_searched, column, file_to_choose):
             filtered_list.append(items[key])
     return filtered_list
 
-def show_actions:
-    to_do_actions = filter_file("to do", 4, file_names["actions_file"])
-        for i in range(0,len(to_do_actions)):
-            print(to_do_actions[i]) #should be sorted by context
+def show_actions(status):
+    to_do_actions = filter_file(status, 4, file_names["actions_file"])
+    for i in range(0,len(to_do_actions)):
+        print(to_do_actions[i]) #should be sorted by context
 
 def show_reminders():
     reminders = load_file(file_names["reminders_file"])
     for i in range(0, len(reminders)):
         print("Reminder: {}\t Date due: {}".format(reminders[i][0],reminders[i][1])) #should be sorted by date
+
+def show_projects():
+    projects = load_file(file_names["projects_file"])
+    for i in range(0, len(projects)):
+        project_actions = filter_file(projects[i][0],1,file_names["actions_file"])
+        print("Project \t" + projects[i][0] + "\n" + "\tActions" + "\n\t======")
+        for j in range(0, len(project_actions)):
+            print(project_actions[j])
+        print("\n")
 
 def argument_parser():
     parser = argparse.ArgumentParser(description='Simple personal poductivity app')
@@ -242,18 +251,20 @@ def argument_parser():
 
     args = parser.parse_args()
 
-    if args.aa == True:
+    if args.aa:
         add_action()
-    elif args.ap == True:
+    elif args.ap:
         add_project()
-    elif args.ac == True:
+    elif args.ac:
         add_context()
-    elif args.sat == True:
-        show_actions()
-    elif args.ar == True:
+    elif args.sat:
+        show_actions("to do")
+    elif args.ar:
         add_reminder()
-    elif args.sr == True:
+    elif args.sr:
         show_reminders()
+    elif args.sp:
+        show_projects()
     else:
         print(load_file(file_names["actions_file"])) #place holder
 
