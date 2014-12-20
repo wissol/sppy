@@ -35,8 +35,8 @@ def load_file(file_to_load): #loads a csv file as a list
             reader = csv.reader(f)
             for row in reader:
                 csv_file_as_list.append(row)
-            f.close
-
+    
+    f.close()        
     return csv_file_as_list
 
 def filter_dates():
@@ -68,10 +68,10 @@ def choose_in_file(file_to_choose):
             g.close()
         return menu
 
-def append_file(file_name, entries):
+def append_file(file_name, entry):
     with open(file_name, 'a', newline='') as f:
         writer = csv.writer(f)
-        writer.writerow(entries)
+        writer.writerow(entry)
 
 def append_new_entry_to_file(entry, work_file, backup_file): 
     # to be split into two functions append_new_entry_to_file(new_entry, file) and backup_file(file)
@@ -273,6 +273,26 @@ def show_projects():
         for j in range(0, len(project_actions)):
             print(project_actions[j])
         print("\n")
+    return
+
+def choose_action_id():
+    choice = input("Input id number or type n for actions\t")
+    if choice == "n":
+        show_projects()
+        choice = input("Input id number")
+          
+    return choice
+
+def do_action(action_id, actions):
+    for i in range(0, len(actions)):
+        if actions[i][-1] == action_id:
+           actions[i][4] = "done"
+    return actions
+
+def write_file(file_name, data):
+    with open(file_name, 'w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerows(data)
 
 def argument_parser():
     parser = argparse.ArgumentParser(description='Simple personal poductivity app')
@@ -285,7 +305,8 @@ def argument_parser():
     parser.add_argument("-ar", action='store_true', help="add reminder")
     parser.add_argument("-sr", action='store_true', help="show reminders")
     parser.add_argument("-sp", action='store_true', help='show projects')
-
+    parser.add_argument("-da", action='store_true', help='set action as done')
+      
     args = parser.parse_args()
 
     if args.aa:
@@ -304,6 +325,11 @@ def argument_parser():
         show_projects()
     elif args.aP:
         add_person()
+    elif args.da:
+        actions = load_file(file_names["actions_file"])
+        action_id = choose_action_id()
+        print(action_id)
+        write_file(file_names["actions_file"], do_action(action_id, actions))
     else:
         print(load_file(file_names["actions_file"])) #place holder
 
