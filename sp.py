@@ -1,6 +1,4 @@
-import os, csv, shutil, time
-
-import argparse # https://docs.python.org/dev/library/argparse.html 
+import os, csv, shutil, time, argparse
 
 settings_file = "s.csv"
 
@@ -210,6 +208,27 @@ def add_reminder():
             if goOn[0].lower() == "n":
                 goOn = False
 
+def add_person():
+    goOn = True
+    
+    while goOn:
+        person = []
+
+        #Description 0
+        person.append(input("\n Name: \t").strip(' ').replace(",",";"))
+
+        # contact_details
+        person.append(input("\n Contact: \t").strip(' ').replace(",",";"))
+
+        # Append entry to file      
+        append_new_entry_to_file(person, file_names["people_file"], backup_file_names["backup_file_" + "people_file"])
+
+        # Ending the loop
+        goOn = input("\n Another person? (n for no)\t")
+        if goOn != "":
+            if goOn[0].lower() == "n":
+                goOn = False
+
 def filter_file(value_searched, column, file_to_choose):
     #returns a filtered list from file
     filtered_list = []
@@ -244,6 +263,7 @@ def argument_parser():
     parser.add_argument("-aa", action='store_true', help="add a new action")
     parser.add_argument("-ap", action='store_true', help="add a new project")
     parser.add_argument("-ac", action='store_true', help="add a new context")
+    parser.add_argument("-aP", action='store_true', help="add a new person")
     parser.add_argument("-sat", action='store_true', help="show pending actions")
     parser.add_argument("-ar", action='store_true', help="add reminder")
     parser.add_argument("-sr", action='store_true', help="show reminders")
@@ -265,6 +285,8 @@ def argument_parser():
         show_reminders()
     elif args.sp:
         show_projects()
+    elif args.aP:
+        add_person()
     else:
         print(load_file(file_names["actions_file"])) #place holder
 
