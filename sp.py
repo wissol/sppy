@@ -87,7 +87,16 @@ def append_new_entry_to_file(entry, work_file, backup_file):
     # append to work backup file    
     shutil.copy2(work_file,backup_file)
 
-def add_action():    
+def generate_id(id_type):
+    actions = load_file(id_type)
+    try:
+        last_action_id = int(actions[-1][-1]) + 1
+    except:
+        last_action_id = 0
+    action_id = str(last_action_id)
+    return action_id
+    
+def add_action():
     goOn = True
     
     while goOn:
@@ -125,6 +134,10 @@ def add_action():
         # Notes 8
         action.append(input("\n Write a note if needed: \t").strip(' ').replace(",","."))
 
+        # id 9
+        action_id = generate_id(file_names["actions_file"])
+        action.append(action_id)
+
         # Append action to file      
         append_new_entry_to_file(action, file_names["actions_file"], backup_file_names["backup_file_" + "actions_file"])
 
@@ -156,6 +169,10 @@ def add_project():
 
         # Notes 3
         project.append(input("\n Write a note if needed: \t").strip(' ').replace(",","."))
+
+        # Id 4
+        project_id = generate_id(file_names["projects_file"])
+        project.append(project_id)
 
         # Append entry to file      
         append_new_entry_to_file(project, file_names["projects_file"], backup_file_names["backup_file_" + "projects_file"])
