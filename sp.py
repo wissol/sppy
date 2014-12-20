@@ -4,16 +4,30 @@ import argparse # https://docs.python.org/dev/library/argparse.html
 
 settings_file = "s.csv"
 
-people_file = "people.csv"
-projects_file = "p.csv"
-actions_file = "a.csv" # next actions in GTD parlance
+file_names = {"people_file":"people.csv","projects_file":"p.csv","actions_file":"a.csv","contexts_file":"contexts.csv","states_file":"states.csv"}
+
 backup_directory = '/Users/migueldeluisespinosa/Dropbox/sppy/bu' # change to your own backup directory
-backup_file = backup_directory + "/" + "f_backup.csv"
-contexts_file = "contexts.csv" 
-states_file = "states.csv" 
-# time_zone = load from settings file
 
 # all these values should be loaded from settings file and stored into some structure
+
+def generate_backup_file_names(backup_directory,file_names):
+    backup_file_names = {}
+    backup_common_file_name_part = backup_directory + "/" + "backup_"
+    for key in file_names:
+        backup_file_names["backup_file_" + key] = backup_common_file_name_part + file_names[key]
+    return backup_file_names
+
+backup_file_names = generate_backup_file_names(backup_directory, file_names)
+
+def generate_backup_files(backup_file_names):
+    for key in backup_file_names:
+        f= open(backup_file_names[key], 'w', newline='')
+        f.close
+
+generate_backup_files(backup_file_names)
+
+# time_zone = load from settings file
+
 
 # def load_settings(settings_file): to do
 
@@ -70,11 +84,11 @@ def append_new_entry_to_file(entry, work_file, backup_file):
     # add entries to file
     append_file(work_file,entry)
 
+
     # copy work back up file to a new time-stamped backup file
     temporal_backup_file = backup_file + time.strftime("%d_%m_%Y_at_%H_%M")+ '.csv'
-    shutil.copy2(backup_file,temporal_backup_file)
-    shutil.move(temporal_backup_file,backup_directory)
-
+    shutil.copy2(work_file,temporal_backup_file)
+    
     # append to work backup file    
     shutil.copy2(work_file,backup_file)
 
@@ -90,23 +104,23 @@ def add_action():
         action.append(time.strftime("%d/%m/%Y %H:%M:%S"))
 
         #Project 1
-        action.append(choose_in_file(projects_file))
+        action.append(choose_in_file(file_names["projects_file"]))
        
         #Description 2
         action.append(input("\n Description: \t").strip(' ').replace(",",";")) # commas replaced with semicolons.
 
         # Context 3        
-        action.append(choose_in_file(contexts_file))
+        action.append(choose_in_file(file_names["contexts_file"]))
 
         # State 4
-        action.append(choose_in_file(states_file))
+        action.append(choose_in_file(file_names["states_file"]))
 
         # date due 5
         action.append(filter_dates())
 
         # person 6
         if action[4] == "waiting for" or action[4] == "assigned to":
-            action.append(choose_in_file(people_file))
+            action.append(choose_in_file(file_names["people_file"]))
         else:
             action.append("")
 
@@ -117,7 +131,7 @@ def add_action():
         action.append(input("\n Write a note if needed: \t").strip(' ').replace(",","."))
 
         # Append action to file      
-        append_new_entry_to_file(action, actions_file)
+        append_new_entry_to_file(action, file_names["actions_file"], backup_file_names["backup_file_" + "actions_file"])
 
         #offer to add reminder?
 
@@ -149,7 +163,7 @@ def add_project():
         project.append(input("\n Write a note if needed: \t").strip(' ').replace(",","."))
 
         # Append entry to file      
-        append_new_entry_to_file(project, projects_file)
+        append_new_entry_to_file(project, file_names["projects_file"], backup_file_names["backup_file_" + "projects_file"])
 
         # Ending the loop
         goOn = input("\n Another project? (n for no)\t")
@@ -171,7 +185,7 @@ def add_context():
         context.append(input("\n Description: \t").strip(' ').replace(",",";"))
 
         # Append entry to file      
-        append_new_entry_to_file(context, contexts_file)
+        append_new_entry_to_file(context, file_names["contexts_file"], backup_file_names["backup_file_" + "contexts_file"])
 
         # Ending the loop
         goOn = input("\n Another context? (n for no)\t")
@@ -204,6 +218,6 @@ def argument_parser():
     elif args.sat == True:
         show_actions("todo")
     else:
-        print("menu") #placeholder: an interactive menu should be called from here.
+        print(backup_file_names) #placeholder: an interactive menu should be called from here.
 
 argument_parser()
