@@ -4,7 +4,7 @@ import argparse # https://docs.python.org/dev/library/argparse.html
 
 settings_file = "s.csv"
 
-file_names = {"people_file":"people.csv","projects_file":"p.csv","actions_file":"a.csv","contexts_file":"contexts.csv","states_file":"states.csv"}
+file_names = {"people_file":"people.csv","projects_file":"p.csv","actions_file":"a.csv","contexts_file":"contexts.csv","states_file":"states.csv", "reminders_file":"r.csv"}
 
 backup_directory = '/Users/migueldeluisespinosa/Dropbox/sppy/bu' # change to your own backup directory
 
@@ -28,10 +28,7 @@ generate_backup_files(backup_file_names)
 
 # time_zone = load from settings file
 
-
 # def load_settings(settings_file): to do
-
-# def setup(): to do
 
 def load_file(file_to_load): #loads a csv file as a list
     csv_file_as_list = []
@@ -171,7 +168,6 @@ def add_project():
             if goOn[0].lower() == "n":
                 goOn = False
 
-
 def add_context():
     goOn = True
     
@@ -193,9 +189,45 @@ def add_context():
             if goOn[0].lower() == "n":
                 goOn = False
 
-def show_actions(filter_thing):
-    #to do
-    return filter_thing
+def add_reminder():
+    goOn = True
+    
+    while goOn:
+        reminder = []
+
+        #Description 0
+        reminder.append(input("\n Description: \t").strip(' ').replace(",",";"))
+
+        # date due 1
+        reminder.append(filter_dates())
+
+        # Append entry to file      
+        append_new_entry_to_file(reminder, file_names["reminders_file"], backup_file_names["backup_file_" + "reminders_file"])
+
+        # Ending the loop
+        goOn = input("\n Another reminder? (n for no)\t")
+        if goOn != "":
+            if goOn[0].lower() == "n":
+                goOn = False
+
+def filter_file(value_searched, column, file_to_choose):
+    #returns a filtered list from file
+    filtered_list = []
+    items = load_file(file_to_choose)
+    for key in range(0,len(items)):
+        if items[key][column] == value_searched:
+            filtered_list.append(items[key])
+    return filtered_list
+
+def show_actions:
+    to_do_actions = filter_file("to do", 4, file_names["actions_file"])
+        for i in range(0,len(to_do_actions)):
+            print(to_do_actions[i]) #should be sorted by context
+
+def show_reminders():
+    reminders = load_file(file_names["reminders_file"])
+    for i in range(0, len(reminders)):
+        print("Reminder: {}\t Date due: {}".format(reminders[i][0],reminders[i][1])) #should be sorted by date
 
 def argument_parser():
     parser = argparse.ArgumentParser(description='Simple personal poductivity app')
@@ -204,8 +236,9 @@ def argument_parser():
     parser.add_argument("-ap", action='store_true', help="add a new project")
     parser.add_argument("-ac", action='store_true', help="add a new context")
     parser.add_argument("-sat", action='store_true', help="show pending actions")
-    parser.add_argument("-satc", action='store_true', help="show actions to-do by context")
     parser.add_argument("-ar", action='store_true', help="add reminder")
+    parser.add_argument("-sr", action='store_true', help="show reminders")
+    parser.add_argument("-sp", action='store_true', help='show projects')
 
     args = parser.parse_args()
 
@@ -216,8 +249,12 @@ def argument_parser():
     elif args.ac == True:
         add_context()
     elif args.sat == True:
-        show_actions("todo")
+        show_actions()
+    elif args.ar == True:
+        add_reminder()
+    elif args.sr == True:
+        show_reminders()
     else:
-        print(backup_file_names) #placeholder: an interactive menu should be called from here.
+        print(load_file(file_names["actions_file"])) #place holder
 
 argument_parser()
