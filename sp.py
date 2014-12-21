@@ -216,6 +216,10 @@ def add_reminder():
         # date due 1
         reminder.append(filter_dates())
 
+        # generate id
+        reminder_id = generate_id(file_names["reminders_file"])
+        action.append(reminder_id)
+
         # Append entry to file      
         append_new_entry_to_file(reminder, file_names["reminders_file"], backup_file_names["backup_file_" + "reminders_file"])
 
@@ -296,16 +300,13 @@ def write_file(file_name, data):
 
 def argument_parser():
     parser = argparse.ArgumentParser(description='Simple personal poductivity app')
-
-    parser.add_argument("-aa", action='store_true', help="add a new action")
-    parser.add_argument("-ap", action='store_true', help="add a new project")
-    parser.add_argument("-ac", action='store_true', help="add a new context")
-    parser.add_argument("-aP", action='store_true', help="add a new person")
-    parser.add_argument("-sat", action='store_true', help="show pending actions")
-    parser.add_argument("-ar", action='store_true', help="add reminder")
-    parser.add_argument("-sr", action='store_true', help="show reminders")
-    parser.add_argument("-sp", action='store_true', help='show projects')
-    parser.add_argument("-da", action='store_true', help='set action as done')
+    arguments = {"-aa":"add a new action", "-ap": "add a new project", "-ac":"add a new context", 
+                 "-aP" : "add a new person", "-sat":"show pending actions", "-ar" : "add reminder",
+                 "-sr" : "show reminders", "-sp": "show projects", "-da" : "set action as done",
+                 "-wr" : "weekly review", "-fp": "file project", "-fa": "file action"}
+   
+    for key in arguments:
+        parser.add_argument(key, action = 'store_true', help= arguments[key])
       
     args = parser.parse_args()
 
@@ -328,8 +329,13 @@ def argument_parser():
     elif args.da:
         actions = load_file(file_names["actions_file"])
         action_id = choose_action_id()
-        print(action_id)
         write_file(file_names["actions_file"], do_action(action_id, actions))
+    elif args.wr:
+        # weekly_review() to-do
+    elif args.fp:
+        # file_project()
+    elif args.fa:
+        # file_action()
     else:
         print(load_file(file_names["actions_file"])) #place holder
 
