@@ -19,7 +19,7 @@ backup_file_names = generate_backup_file_names(backup_directory, file_names)
 
 def generate_backup_files(backup_file_names):
     for key in backup_file_names:
-        f= open(backup_file_names[key], 'w', newline='')
+        f= open(backup_file_names[key], 'a', newline='')
         f.close
 
 generate_backup_files(backup_file_names)
@@ -73,19 +73,21 @@ def append_file(file_name, entry):
         writer = csv.writer(f)
         writer.writerow(entry)
 
-def append_new_entry_to_file(entry, work_file, backup_file): 
-    # to be split into two functions append_new_entry_to_file(new_entry, file) and backup_file(file)
-    
-    # add entries to file
-    append_file(work_file,entry)
-
-
+def backup_file(work_file, backup_file_name):
     # copy work back up file to a new time-stamped backup file
-    temporal_backup_file = backup_file + time.strftime("%d_%m_%Y_at_%H_%M")+ '.csv'
+    temporal_backup_file = backup_file_name + time.strftime("%d_%m_%Y_at_%H_%M")+ '.csv'
     shutil.copy2(work_file,temporal_backup_file)
     
     # append to work backup file    
-    shutil.copy2(work_file,backup_file)
+    shutil.copy2(work_file,backup_file_name)
+
+def append_new_entry_to_file(entry, work_file, backup_file_name): 
+        
+    # add entries to file
+    append_file(work_file,entry)
+
+    backup_file(work_file, backup_file_name)
+    
 
 def generate_id(id_type):
     actions = load_file(id_type)
@@ -299,11 +301,12 @@ def write_file(file_name, data):
         writer.writerows(data)
 
 def argument_parser():
-    parser = argparse.ArgumentParser(description='Simple personal poductivity app')
+    myepilog = 'sp.py Copyright (C) 2014  Miguel de Luis Espinosa.\n This program comes with ABSOLUTELY NO WARRANTY. \n This is free software, and you are welcome to redistribute it under certain conditions'
+    parser = argparse.ArgumentParser(description=' Simple personal poductivity app', epilog= myepilog)
     arguments = {"-aa":"add a new action", "-ap": "add a new project", "-ac":"add a new context", 
                  "-aP" : "add a new person", "-sat":"show pending actions", "-ar" : "add reminder",
                  "-sr" : "show reminders", "-sp": "show projects", "-da" : "set action as done",
-                 "-wr" : "weekly review", "-fp": "file project", "-fa": "file action"}
+                 "-wr" : "weekly review", "-fp": "file project", "-fa": "file action",}
    
     for key in arguments:
         parser.add_argument(key, action = 'store_true', help= arguments[key])
@@ -330,12 +333,13 @@ def argument_parser():
         actions = load_file(file_names["actions_file"])
         action_id = choose_action_id()
         write_file(file_names["actions_file"], do_action(action_id, actions))
+        backup_file(file_names["actions_file"], backup_file_names["backup_file_"+ "actions_file"])
     elif args.wr:
-        # weekly_review() to-do
+        print("sorry")
     elif args.fp:
-        # file_project()
+        print("sorry")
     elif args.fa:
-        # file_action()
+        print("sorry")
     else:
         print(load_file(file_names["actions_file"])) #place holder
 
