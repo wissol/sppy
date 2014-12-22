@@ -2,7 +2,10 @@ import os, csv, shutil, time, argparse
 
 settings_file = "s.csv"
 
-file_names = {"people_file":"people.csv","projects_file":"p.csv","actions_file":"a.csv","contexts_file":"contexts.csv","states_file":"states.csv", "reminders_file":"r.csv"}
+file_names = {"people_file":"people.csv","projects_file":"p.csv",
+              "actions_file":"a.csv","contexts_file":"contexts.csv",
+              "states_file":"states.csv", "reminders_file":"r.csv",
+              "archives_file":"archives.csv"}
 
 backup_directory = '/Users/migueldeluisespinosa/Dropbox/sppy/bu' # change to your own backup directory
 
@@ -309,6 +312,26 @@ def write_file(file_name, data):
         writer = csv.writer(f)
         writer.writerows(data)
 
+def archive_entry(entry):
+    append_new_entry_to_file(entry, file_names["archives_file"], backup_file_names["backup_file_" + 'archives_file'])
+
+def delete_action(action_id, to_archive):
+    found = False
+    found_action = []
+    backup_file(file_names['actions_file'],backup_file_names["backup_file_" + 'actions_file'])
+    actions = load_file(file_names['actions_file'])
+    for i in range(0, len(actions)):
+        if actions[i][-1] == action_id:
+            found_action = actions.pop(i)
+            found = True
+            print(found_action)
+            if to_archive:
+                archive_entry(found_action)
+            break
+    if found:
+        write_file(file_names['actions_file'], actions)
+        backup_file(file_names['actions_file'],backup_file_names["backup_file_" + 'actions_file']) # perhaps that's a bit over the top
+
 def edit_action():
     print(lame_excuse)
 
@@ -319,7 +342,7 @@ def argument_parser():
                  "-aP" : "add a new person", "-ar" : "add reminder",
                  "-sr" : "show reminders", "-sap": "show actions by project", "-da" : "set action as done",
                  "-wr" : "weekly review", "-fp": "file project", "-fa": "file action", 
-                 "-ea" : "edit action", "-ep" : "edit project"}
+                 "-ea" : "edit action", "-ep" : "edit project", "-dela": "delete action"}
    
     for key in arguments:
         parser.add_argument(key, action = 'store_true', help= arguments[key])
@@ -358,7 +381,11 @@ def argument_parser():
         action_id = choose_action_id()
     elif args.ep:
         print(lame_excuse)
+    elif args.dela:
+        a = delete_action("3", True) # for testing purposes
+        b = delete_action("4", False)
     else:
         print(lame_excuse) 
 
 argument_parser()
+
