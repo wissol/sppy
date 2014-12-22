@@ -274,10 +274,12 @@ def show_projects():
     projects = load_file(file_names["projects_file"])
     for i in range(0, len(projects)):
         project_actions = filter_file(projects[i][0],1,file_names["actions_file"])
-        print("Project \t" + projects[i][0] + "\n" + "\tActions" + "\n\t======")
-        for j in range(0, len(project_actions)):
-            print(project_actions[j])
-        print("\n")
+        if project_actions != []:
+            print("\n\tProject: " + projects[i][0] + "\n\n" + "\tActions" + "\n")
+            for j in range(0, len(project_actions)):
+                this_pa = project_actions[j]
+                print("\t{}. {}\n\t\t* Context: {}\tState: {}\n\t\t* Date due:{}\n".format(j+1, this_pa[2], this_pa[3], this_pa[4], this_pa[5]))
+            print("\n")
     return
 
 def choose_action_id():
@@ -348,7 +350,6 @@ def argument_parser():
     elif args.ea:
         actions = load_file(file_names["actions_file"])
         action_id = choose_action_id()
-        # end up
     elif args.ep:
         print(lame_excuse)
     else:
