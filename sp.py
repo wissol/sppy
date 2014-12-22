@@ -115,7 +115,7 @@ def add_action():
         action.append(choose_in_file(file_names["projects_file"]))
        
         #Description 2
-        action.append(input("\n Description: \t").strip(' ').replace(",",";")) # commas replaced with semicolons.
+        action.append(input("\n Short Description: \t").strip(' ').replace(",",";")) # commas replaced with semicolons.
 
         # Context 3
         print("Context of this action")        
@@ -269,27 +269,22 @@ def filter_file(value_searched, column, file_to_choose):
             filtered_list.append(items[key])
     return filtered_list
 
-def show_actions(status):
-    to_do_actions = filter_file(status, 4, file_names["actions_file"])
-    for i in range(0,len(to_do_actions)):
-        print(to_do_actions[i]) #should be sorted by context
-
 def show_reminders():
     reminders = load_file(file_names["reminders_file"])
     for i in range(0, len(reminders)):
         print("Reminder: {}\t Date due: {}".format(reminders[i][0],reminders[i][1])) #should be sorted by date
 
-def show_projects():
+def show_actions():
     projects = load_file(file_names["projects_file"])
     for i in range(0, len(projects)):
         project_actions = filter_file(projects[i][0],1,file_names["actions_file"])
         if project_actions != []:
-            print("\n\tProject: " + projects[i][0] + "\n\n" + "\tActions" + "\n")
+            print("\n\tProject: " + projects[i][0] + "\n\n")
             for j in range(0, len(project_actions)):
                 this_pa = project_actions[j]
-                print("\t{}. {}\n\t\t* Context: {}\tState: {}---since:{}\n\t\t* Date due:{}\n\t\tID: {}\n".
+                print("\t{}. {}\n\t\t* Context: {}\tState: {}, since: {}\n\t\t* Date due:{}\n\t\tID: {}\n".
                     format(j+1, this_pa[2], this_pa[3], this_pa[4], this_pa[5], this_pa[6],this_pa[-1]))
-            print("\n")
+            print("\t" + "=" * 80 + "\n")
     return
 
 def choose_action_id():
@@ -318,8 +313,8 @@ def argument_parser():
     myepilog = 'sp.py Copyright (C) 2014  Miguel de Luis Espinosa.\n This program comes with ABSOLUTELY NO WARRANTY. \n This is free software, and you are welcome to redistribute it under certain conditions'
     parser = argparse.ArgumentParser(description=' Simple personal poductivity app', epilog= myepilog)
     arguments = {"-aa":"add a new action", "-ap": "add a new project", "-ac":"add a new context", 
-                 "-aP" : "add a new person", "-sat":"show pending actions", "-ar" : "add reminder",
-                 "-sr" : "show reminders", "-sp": "show projects", "-da" : "set action as done",
+                 "-aP" : "add a new person", "-ar" : "add reminder",
+                 "-sr" : "show reminders", "-sap": "show actions by project", "-da" : "set action as done",
                  "-wr" : "weekly review", "-fp": "file project", "-fa": "file action", 
                  "-ea" : "edit action", "-ep" : "edit project"}
    
@@ -336,14 +331,12 @@ def argument_parser():
         add_project()
     elif args.ac:
         add_context()
-    elif args.sat:
-        show_actions("to do")
     elif args.ar:
         add_reminder()
     elif args.sr:
         show_reminders()
-    elif args.sp:
-        show_projects()
+    elif args.sap:
+        show_actions()
     elif args.aP:
         add_person()
     elif args.da:
