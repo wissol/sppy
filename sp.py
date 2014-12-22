@@ -282,9 +282,12 @@ def show_actions():
             print("\n\tProject: " + projects[i][0] + "\n\n")
             for j in range(0, len(project_actions)):
                 this_pa = project_actions[j]
-                print("\t{}. {}\n\t\t* Context: {}\tState: {}, since: {}\n\t\t* Date due:{}\n\t\tID: {}\n".
+                print("\t{}. {}\n\t\t* Context: {}\tState: {}, since: {}\n\t\t* Date due:{}\n\t\tID: {}".
                     format(j+1, this_pa[2], this_pa[3], this_pa[4], this_pa[5], this_pa[6],this_pa[-1]))
-            print("\t" + "=" * 80 + "\n")
+                if this_pa[-2] != "":
+                    print("\t\tNotes: {}".format(this_pa[-2]))
+                print("\n\t" + "-" * 80 + "\n")
+        print("\n\t" + "=" * 80 + "\n")
     return
 
 def choose_action_id():
