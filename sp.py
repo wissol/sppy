@@ -8,6 +8,15 @@ backup_directory = '/Users/migueldeluisespinosa/Dropbox/sppy/bu' # change to you
 
 # all these values should be loaded from settings file and stored into some structure
 
+def generate_id(id_type):
+    actions = load_file(id_type)
+    try:
+        last_action_id = int(actions[-1][-1]) + 1
+    except:
+        last_action_id = 0
+    action_id = str(last_action_id)
+    return action_id
+
 def generate_backup_file_names(backup_directory,file_names):
     backup_file_names = {}
     backup_common_file_name_part = backup_directory + "/" + "backup_"
@@ -22,7 +31,7 @@ def generate_backup_files(backup_file_names):
         f= open(backup_file_names[key], 'a', newline='')
         f.close
 
-generate_backup_files(backup_file_names)
+generate_backup_files(backup_file_names) #this three should go in a setup function
 
 # time_zone = load from settings file
 
@@ -87,16 +96,6 @@ def append_new_entry_to_file(entry, work_file, backup_file_name):
     append_file(work_file,entry)
 
     backup_file(work_file, backup_file_name)
-    
-
-def generate_id(id_type):
-    actions = load_file(id_type)
-    try:
-        last_action_id = int(actions[-1][-1]) + 1
-    except:
-        last_action_id = 0
-    action_id = str(last_action_id)
-    return action_id
     
 def add_action():
     goOn = True
@@ -300,18 +299,24 @@ def write_file(file_name, data):
         writer = csv.writer(f)
         writer.writerows(data)
 
+def edit_action():
+    print(lame_excuse)
+
 def argument_parser():
     myepilog = 'sp.py Copyright (C) 2014  Miguel de Luis Espinosa.\n This program comes with ABSOLUTELY NO WARRANTY. \n This is free software, and you are welcome to redistribute it under certain conditions'
     parser = argparse.ArgumentParser(description=' Simple personal poductivity app', epilog= myepilog)
     arguments = {"-aa":"add a new action", "-ap": "add a new project", "-ac":"add a new context", 
                  "-aP" : "add a new person", "-sat":"show pending actions", "-ar" : "add reminder",
                  "-sr" : "show reminders", "-sp": "show projects", "-da" : "set action as done",
-                 "-wr" : "weekly review", "-fp": "file project", "-fa": "file action",}
+                 "-wr" : "weekly review", "-fp": "file project", "-fa": "file action", 
+                 "-ea" : "edit action", "-ep" : "edit project"}
    
     for key in arguments:
         parser.add_argument(key, action = 'store_true', help= arguments[key])
       
     args = parser.parse_args()
+
+    lame_excuse = "sorry, not implemented yet"
 
     if args.aa:
         add_action()
@@ -335,12 +340,18 @@ def argument_parser():
         write_file(file_names["actions_file"], do_action(action_id, actions))
         backup_file(file_names["actions_file"], backup_file_names["backup_file_"+ "actions_file"])
     elif args.wr:
-        print("sorry")
+        print(lame_excuse)
     elif args.fp:
-        print("sorry")
+        print(lame_excuse)
     elif args.fa:
-        print("sorry")
+        print(lame_excuse)
+    elif args.ea:
+        actions = load_file(file_names["actions_file"])
+        action_id = choose_action_id()
+        # end up
+    elif args.ep:
+        print(lame_excuse)
     else:
-        print(load_file(file_names["actions_file"])) #place holder
+        print(lame_excuse) 
 
 argument_parser()
