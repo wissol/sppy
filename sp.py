@@ -278,7 +278,7 @@ def show_projects():
             print("\n\tProject: " + projects[i][0] + "\n\n" + "\tActions" + "\n")
             for j in range(0, len(project_actions)):
                 this_pa = project_actions[j]
-                print("\t{}. {}\n\t\t* Context: {}\tState: {}\n\t\t* Date due:{}\n".format(j+1, this_pa[2], this_pa[3], this_pa[4], this_pa[5]))
+                print("\t{}. {}\n\t\t* Context: {}\tState: {}\n\t\t* Date due:{}\n\t\tID: {}\n".format(j+1, this_pa[2], this_pa[3], this_pa[4], this_pa[5],this_pa[-1]))
             print("\n")
     return
 
