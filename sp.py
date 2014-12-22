@@ -8,6 +8,7 @@ backup_directory = '/Users/migueldeluisespinosa/Dropbox/sppy/bu' # change to you
 
 # all these values should be loaded from settings file and stored into some structure
 
+
 def generate_id(id_type):
     actions = load_file(id_type)
     try:
@@ -26,12 +27,13 @@ def generate_backup_file_names(backup_directory,file_names):
 
 backup_file_names = generate_backup_file_names(backup_directory, file_names)
 
-def generate_backup_files(backup_file_names):
-    for key in backup_file_names:
-        f= open(backup_file_names[key], 'a', newline='')
+def generate_files(file_names):
+    for key in file_names:
+        f= open(file_names[key], 'a', newline='')
         f.close
 
-generate_backup_files(backup_file_names) #this three should go in a setup function
+generate_files(file_names)
+generate_files(backup_file_names) #this three should go in a setup function
 
 # time_zone = load from settings file
 
@@ -106,35 +108,42 @@ def add_action():
         action = [] 
                 
         #Date Gathered  0
-        action.append(time.strftime("%d/%m/%Y %H:%M:%S"))
+        action.append(time.strftime("%d/%m/%Y %H:%M"))
 
         #Project 1
+        print("Project this action belongs to")
         action.append(choose_in_file(file_names["projects_file"]))
        
         #Description 2
         action.append(input("\n Description: \t").strip(' ').replace(",",";")) # commas replaced with semicolons.
 
-        # Context 3        
+        # Context 3
+        print("Context of this action")        
         action.append(choose_in_file(file_names["contexts_file"]))
 
         # State 4
+        print("State")
         action.append(choose_in_file(file_names["states_file"]))
 
-        # date due 5
-        action.append(filter_dates())
+        # State Modified date 5
+        action.append(time.strftime("%d/%m/%Y %H:%M"))
 
-        # person 6
+        # date due 6
+        deadline = input("Is this action under a deadline? Press 'y' to introduce one")
+        if deadline == "y":
+            action.append(filter_dates())
+        else:
+            action.append("")
+
+        # person 7
         if action[4] == "waiting for" or action[4] == "assigned to":
             action.append(choose_in_file(file_names["people_file"]))
         else:
             action.append("")
 
-        # order 7
-        action.append("")
-
         # Notes 8
         action.append(input("\n Write a note if needed: \t").strip(' ').replace(",","."))
-
+     
         # id 9
         action_id = generate_id(file_names["actions_file"])
         action.append(action_id)
@@ -278,7 +287,8 @@ def show_projects():
             print("\n\tProject: " + projects[i][0] + "\n\n" + "\tActions" + "\n")
             for j in range(0, len(project_actions)):
                 this_pa = project_actions[j]
-                print("\t{}. {}\n\t\t* Context: {}\tState: {}\n\t\t* Date due:{}\n\t\tID: {}\n".format(j+1, this_pa[2], this_pa[3], this_pa[4], this_pa[5],this_pa[-1]))
+                print("\t{}. {}\n\t\t* Context: {}\tState: {}---since:{}\n\t\t* Date due:{}\n\t\tID: {}\n".
+                    format(j+1, this_pa[2], this_pa[3], this_pa[4], this_pa[5], this_pa[6],this_pa[-1]))
             print("\n")
     return
 
