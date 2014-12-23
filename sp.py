@@ -1,4 +1,5 @@
 import os, csv, shutil, time, argparse
+from datetime import datetime
 
 settings_file = "s.csv"
 
@@ -10,7 +11,6 @@ file_names = {"people_file":"people.csv","projects_file":"p.csv",
 backup_directory = '/Users/migueldeluisespinosa/Dropbox/sppy/bu' # change to your own backup directory
 
 # all these values should be loaded from settings file and stored into some structure
-
 
 def generate_id(id_type):
     actions = load_file(id_type)
@@ -57,17 +57,17 @@ def filter_dates():
     day = ""
     month = ""
     year = ""
-
+    
     while len(day) != 2 or int(day) < 1 or int(day) > 31:
         day = input("\n Day (dd): \t").strip(', ')
 
     while len(month) != 2 or int(month) <1 or int(month) > 12:
         month = input("\n Month (mm): \t").strip(', ')
         
-    while len(year) != 4 or int(year) <2014 or int(month) > 2114:
-        month = input("\n Year (mm): \t").strip(', ')
+    while len(year) != 4 or int(year) < 2013 or int(year) > 2114:
+        year = input("\n Year (mm): \t").strip(', ')
 
-    return day + "/" + month + "/" + year
+    return date(year, month, day) 
 
 def choose_in_file(file_to_choose):
 
@@ -106,13 +106,20 @@ def append_new_entry_to_file(entry, work_file, backup_file_name):
 
     backup_file(work_file, backup_file_name)
     
-def evaluate_loop(thing)
+def evaluate_loop(thing):
     answer = input("\n Another {} (n for no)\t".format(thing))
     evaluation = True
     if answer != "":
         if answer[0].lower() == "n":
             evaluation = False
     return evaluation
+
+def add_deadline(thing):
+    deadline = input("Is this {} under a deadline? Press 'y' to add one".format(thing))
+    if deadline == "y":
+        return filter_dates()
+    else:
+        return ""
 
 def add_action():
     goOn = True
@@ -123,46 +130,32 @@ def add_action():
         action = [] 
                 
         #Date Gathered  0
-        action.append(time.strftime("%d/%m/%Y %H:%M"))
-
+        action.append(datetime.today())
         #Project 1
         print("Project this action belongs to")
-        action.append(choose_in_file(file_names["projects_file"]))
-       
+        action.append(choose_in_file(file_names["projects_file"]))       
         #Description 2
         action.append(input("\n Short Description: \t").strip(' ').replace(",",";")) # commas replaced with semicolons.
-
         # Context 3
         print("Context of this action")        
         action.append(choose_in_file(file_names["contexts_file"]))
-
         # State 4
         print("State")
         action.append(choose_in_file(file_names["states_file"]))
-
         # State Modified date 5
-        action.append(time.strftime("%d/%m/%Y %H:%M"))
-
+        action.append(datetime.today())
         # date due 6
-        deadline = input("Is this action under a deadline? Press 'y' to introduce one")
-        if deadline == "y":
-            action.append(filter_dates())
-        else:
-            action.append("")
-
+        action.append(add_deadline("action"))
         # person 7
         if action[4] == "waiting for" or action[4] == "assigned to":
             action.append(choose_in_file(file_names["people_file"]))
         else:
             action.append("")
-
         # Notes 8
-        action.append(input("\n Write a note if needed: \t").strip(' ').replace(",","."))
-     
+        action.append(input("\n Write a note if needed: \t").strip(' ').replace(",","."))     
         # id 9
         action_id = generate_id(file_names["actions_file"])
         action.append(action_id)
-
         # Append action to file      
         append_new_entry_to_file(action, file_names["actions_file"], backup_file_names["backup_file_" + "actions_file"])
 
@@ -178,27 +171,20 @@ def add_project():
         
         # Project -  description 0, date gathered 1, date due 2, notes 3
         project = [] 
-
         #Description 0
         project.append(input("\n Description: \t").strip(' ').replace(",",";")) # commas replaced with semicolons.
         # check there's no project with the same description
-
         #Date Gathered  1
-        project.append(time.strftime("%d/%m/%Y %H:%M:%S"))
-
+        project.append(datetime.today())
         # date due 2
-        project.append(filter_dates())
-
+        action.append(add_deadline("project"))        
         # Notes 3
         project.append(input("\n Write a note if needed: \t").strip(' ').replace(",","."))
-
         # Id 4
         project_id = generate_id(file_names["projects_file"])
         project.append(project_id)
-
         # Append entry to file      
         append_new_entry_to_file(project, file_names["projects_file"], backup_file_names["backup_file_" + "projects_file"])
-
         # Ending the loop
         goOn = evaluate_loop("project")
 
@@ -210,13 +196,10 @@ def add_context():
 
         #Name
         context.append(input("\n Name: \t").strip(' ').replace(",",";"))
-
         #Description
         context.append(input("\n Description: \t").strip(' ').replace(",",";"))
-
         # Append entry to file      
         append_new_entry_to_file(context, file_names["contexts_file"], backup_file_names["backup_file_" + "contexts_file"])
-
         # Ending the loop
         goOn = evaluate_loop("context")
 
