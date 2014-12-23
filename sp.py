@@ -56,14 +56,18 @@ def load_file(file_to_load): #loads a csv file as a list
 def filter_dates():
     day = ""
     month = ""
+    year = ""
 
     while len(day) != 2 or int(day) < 1 or int(day) > 31:
-        day = input("\n Day (dd): \t").strip(',')
+        day = input("\n Day (dd): \t").strip(', ')
 
     while len(month) != 2 or int(month) <1 or int(month) > 12:
-        month = input("\n Month (mm): \t").strip(',')
+        month = input("\n Month (mm): \t").strip(', ')
+        
+    while len(year) != 4 or int(year) <2014 or int(month) > 2114:
+        month = input("\n Year (mm): \t").strip(', ')
 
-    return day + "/" + month
+    return day + "/" + month + "/" + year
 
 def choose_in_file(file_to_choose):
 
