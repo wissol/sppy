@@ -102,6 +102,14 @@ def append_new_entry_to_file(entry, work_file, backup_file_name):
 
     backup_file(work_file, backup_file_name)
     
+def evaluate_loop(thing)
+    answer = input("\n Another {} (n for no)\t".format(thing))
+    evaluation = True
+    if answer != "":
+        if answer[0].lower() == "n":
+            evaluation = False
+    return evaluation
+
 def add_action():
     goOn = True
     
@@ -157,10 +165,7 @@ def add_action():
         #offer to add reminder?
 
         # Ending the loop
-        goOn = input("\n Another action? (n for no)\t")
-        if goOn != "":
-            if goOn[0].lower() == "n":
-                goOn = False
+        goOn = evaluate_loop("action")     
 
 def add_project():
     goOn = True
@@ -191,10 +196,7 @@ def add_project():
         append_new_entry_to_file(project, file_names["projects_file"], backup_file_names["backup_file_" + "projects_file"])
 
         # Ending the loop
-        goOn = input("\n Another project? (n for no)\t")
-        if goOn != "":
-            if goOn[0].lower() == "n":
-                goOn = False
+        goOn = evaluate_loop("project")
 
 def add_context():
     goOn = True
@@ -212,10 +214,7 @@ def add_context():
         append_new_entry_to_file(context, file_names["contexts_file"], backup_file_names["backup_file_" + "contexts_file"])
 
         # Ending the loop
-        goOn = input("\n Another context? (n for no)\t")
-        if goOn != "":
-            if goOn[0].lower() == "n":
-                goOn = False
+        goOn = evaluate_loop("context")
 
 def add_reminder():
     goOn = True
@@ -237,10 +236,7 @@ def add_reminder():
         append_new_entry_to_file(reminder, file_names["reminders_file"], backup_file_names["backup_file_" + "reminders_file"])
 
         # Ending the loop
-        goOn = input("\n Another reminder? (n for no)\t")
-        if goOn != "":
-            if goOn[0].lower() == "n":
-                goOn = False
+        goOn = evaluate_loop("reminder")
 
 def add_person():
     goOn = True
@@ -258,10 +254,7 @@ def add_person():
         append_new_entry_to_file(person, file_names["people_file"], backup_file_names["backup_file_" + "people_file"])
 
         # Ending the loop
-        goOn = input("\n Another person? (n for no)\t")
-        if goOn != "":
-            if goOn[0].lower() == "n":
-                goOn = False
+        goOn = evaluate_loop("contact")
 
 def filter_file(value_searched, column, file_to_choose):
     #returns a filtered list from file
