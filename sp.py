@@ -1,5 +1,5 @@
 import os, csv, shutil, time, argparse
-from datetime import datetime
+from datetime import datetime, date
 
 settings_file = "s.csv"
 
@@ -53,10 +53,12 @@ def load_file(file_to_load): #loads a csv file as a list
     f.close()        
     return csv_file_as_list
 
-def filter_dates():
+def filter_dates(thing):
     day = ""
     month = ""
     year = ""
+    hour = ""
+    minute = ""
     
     while len(day) != 2 or int(day) < 1 or int(day) > 31:
         day = input("\n Day (dd): \t").strip(', ')
@@ -67,7 +69,14 @@ def filter_dates():
     while len(year) != 4 or int(year) < 2013 or int(year) > 2114:
         year = input("\n Year (mm): \t").strip(', ')
 
-    return date(year, month, day) 
+    add_hour = input("Does this {} must be accomplished before a certain hour? Type y for 'yes'".format(thing))
+    if add_hour == "y":
+        while int(hour) > 24 or int(hour) < 1:
+            hour = input("\n Hour (24): \t").strip(', ')
+        while int(minute) > 60 or int(minute) < 1:
+            minute = input("\n Minute: \t").strip(', ')
+
+    return datetime.combine(date(year, month, day), time(hour, minute))
 
 def choose_in_file(file_to_choose):
 
@@ -117,7 +126,7 @@ def evaluate_loop(thing):
 def add_deadline(thing):
     deadline = input("Is this {} under a deadline? Press 'y' to add one".format(thing))
     if deadline == "y":
-        return filter_dates()
+        return filter_dates(thing)
     else:
         return ""
 
@@ -213,7 +222,7 @@ def add_reminder():
         reminder.append(input("\n Description: \t").strip(' ').replace(",",";"))
 
         # date due 1
-        reminder.append(filter_dates())
+        action.append(add_deadline("reminder"))
 
         # generate id
         reminder_id = generate_id(file_names["reminders_file"])
