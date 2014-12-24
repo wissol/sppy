@@ -29,8 +29,6 @@ def generate_backup_file_names(backup_directory,file_names):
         backup_file_names["backup_file_" + key] = backup_common_file_name_part + file_names[key]
     return backup_file_names
 
-backup_file_names = generate_backup_file_names(backup_directory, file_names)
-
 def generate_files(file_names):
     for key in file_names:
         f= open(file_names[key], 'a', newline='')
@@ -351,7 +349,22 @@ def delete_action(action_id, to_archive):
         return found_action
 
 def edit_action(action_id):
-    print(lame_excuse)
+    # get action
+    actions = load_file(file_names["actions_file"])
+    action_to_edit = ""
+    for i in range(0, len(actions)):
+        if actions[i][-1] == action_id:
+            action_to_edit = actions.pop(i)
+            break
+    # display edit menu
+    print(action_to_edit)
+    column = input("Choose column to edit:\t")
+    data = input("Introduce new data")
+    # change data
+    action_to_edit[int(column)] = data
+    # save and backup
+    write_file(file_names['actions_file'], actions)
+    append_new_entry_to_file(action_to_edit, file_names["actions_file"], backup_file_names["backup_file_actions_file"])
 
 def argument_parser():
     myepilog = 'sp.py Copyright (C) 2014  Miguel de Luis Espinosa.\n This program comes with ABSOLUTELY NO WARRANTY. \n This is free software, and you are welcome to redistribute it under certain conditions'
@@ -397,7 +410,7 @@ def argument_parser():
         deleted_action = delete_action(action_id, True)
         print("Action filed: \n{}".format(deleted_action))
     elif args.ea:
-        action_id = display_and_choose_actions()
+        action_id = choose_action_id()
         edit_action(action_id)
     elif args.ep:
         print(lame_excuse)
@@ -408,6 +421,6 @@ def argument_parser():
     else:
         print(lame_excuse) 
 
+backup_file_names = generate_backup_file_names(backup_directory, file_names)
 load_default_settings(settings_file)
 argument_parser()
-
