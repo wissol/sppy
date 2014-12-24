@@ -1,18 +1,16 @@
 import os, csv, shutil, time, argparse
 from datetime import datetime, date
 
-settings_file = "s.csv"
-
 file_names = {"people_file":"people.csv","projects_file":"p.csv",
               "actions_file":"a.csv","contexts_file":"contexts.csv",
               "reminders_file":"r.csv", "archives_file":"archives.csv",
-              "last_id_file":"id.csv", "trash_file":"trash.csv"}
+              "last_id_file":"id.csv", "trash_file":"trash.csv", "settings_file":"s.csv"}
+
+settings_file = file_names["settings_file"]
 
 backup_directory = '/Users/migueldeluisespinosa/Dropbox/sppy/bu' # change to your own backup directory
 
 states = {"t":"to do", "x":"done", "d": "delegated to", "w": "waiting for"}
-
-# all these values should be loaded from settings file and stored into some structure
 
 def generate_id():
     last_id = load_file("id.csv")
@@ -38,12 +36,22 @@ def generate_files(file_names):
         f= open(file_names[key], 'a', newline='')
         f.close
 
-generate_files(file_names)
-generate_files(backup_file_names) #this three should go in a setup function
-
-# time_zone = load from settings file
-
-# def load_settings(settings_file): to do
+def load_default_settings(settings_file):
+    generate_files(file_names)
+    generate_files(backup_file_names)
+    settings = load_file(settings_file)
+    contexts = load_file(file_names["contexts_file"])
+    if len(contexts) == 0:
+        contexts = settings[0]
+        for i in range(0, len(contexts)):
+            with open(file_names["contexts_file"], 'a') as f:
+                f.write(contexts[i]+"\n")
+    projects = load_file(file_names["projects_file"])
+    if len(projects) == 0:
+        projects = settings[1]
+        for i in range(0, len(projects)):
+            with open(file_names["projects_file"], 'a') as g:
+                g.write(projects[i]+"\n")
 
 def load_file(file_to_load): #loads a csv file as a list
     csv_file_as_list = []
@@ -400,5 +408,6 @@ def argument_parser():
     else:
         print(lame_excuse) 
 
+load_default_settings(settings_file)
 argument_parser()
 
