@@ -5,21 +5,24 @@ settings_file = "s.csv"
 
 file_names = {"people_file":"people.csv","projects_file":"p.csv",
               "actions_file":"a.csv","contexts_file":"contexts.csv",
-              "states_file":"states.csv", "reminders_file":"r.csv",
-              "archives_file":"archives.csv"}
+              "reminders_file":"r.csv", "archives_file":"archives.csv",
+              "last_id_file":"id.csv", "trash_file":"trash.csv"}
 
 backup_directory = '/Users/migueldeluisespinosa/Dropbox/sppy/bu' # change to your own backup directory
 
+states = {"t":"to do", "x":"done", "d": "delegated to", "w": "waiting for"}
+
 # all these values should be loaded from settings file and stored into some structure
 
-def generate_id(id_type):
-    actions = load_file(id_type)
+def generate_id():
+    last_id = load_file("id.csv")
     try:
-        last_action_id = int(actions[-1][-1]) + 1
+        new_id = int(last_id[0][0]) + 1
     except:
-        last_action_id = 0
-    action_id = str(last_action_id)
-    return action_id
+        new_id = 0
+    new_id = str(new_id)
+    write_file("id.csv", new_id)
+    return new_id
 
 def generate_backup_file_names(backup_directory,file_names):
     backup_file_names = {}
@@ -57,26 +60,26 @@ def filter_dates(thing):
     day = ""
     month = ""
     year = ""
-    hour = ""
-    minute = ""
+    hour = "0"
+    minute = "0"
     
-    while len(day) != 2 or int(day) < 1 or int(day) > 31:
+    while len(day) == 0 or int(day) < 1 or int(day) > 31:
         day = input("\n Day (dd): \t").strip(', ')
 
-    while len(month) != 2 or int(month) <1 or int(month) > 12:
+    while len(month) == 0 or int(month) <1 or int(month) > 12:
         month = input("\n Month (mm): \t").strip(', ')
         
-    while len(year) != 4 or int(year) < 2013 or int(year) > 2114:
+    while len(year) == 0 or int(year) < 2013 or int(year) > 2114:
         year = input("\n Year (mm): \t").strip(', ')
 
     add_hour = input("Does this {} must be accomplished before a certain hour? Type y for 'yes'".format(thing))
     if add_hour == "y":
-        while int(hour) > 24 or int(hour) < 1:
+        while len(hour) == 0 or int(hour) > 24 or int(hour) < 1:
             hour = input("\n Hour (24): \t").strip(', ')
-        while int(minute) > 60 or int(minute) < 1:
-            minute = input("\n Minute: \t").strip(', ')
+        while len(minute) == 0 or int(minute) > 60 or int(minute) < 1:
+            minute = input("\n Minute: \t").strip(', ')  
 
-    return datetime.combine(date(year, month, day), time(hour, minute))
+    return "{}-{}-{} {}:{}".format(year,month,day,hour,minute)
 
 def choose_in_file(file_to_choose):
 
@@ -93,6 +96,18 @@ def choose_in_file(file_to_choose):
         with open(file_to_choose, 'a', newline='') as g:
             g.write(menu)
             g.close()
+        return menu
+
+def choose_in_dictionary(states):
+
+    for key in states:
+        print("Enter {} for {}".format(key, states[key]))
+
+    menu = input("\n Choose an item\t")
+
+    if menu not in states:
+        choose_in_dictionary(states)
+    else:
         return menu
 
 def append_file(file_name, entry):
@@ -150,20 +165,20 @@ def add_action():
         action.append(choose_in_file(file_names["contexts_file"]))
         # State 4
         print("State")
-        action.append(choose_in_file(file_names["states_file"]))
+        action.append(choose_in_dictionary(states))
         # State Modified date 5
         action.append(datetime.today())
         # date due 6
         action.append(add_deadline("action"))
         # person 7
-        if action[4] == "waiting for" or action[4] == "assigned to":
+        if action[4] == "w" or action[4] == "d":
             action.append(choose_in_file(file_names["people_file"]))
         else:
             action.append("")
         # Notes 8
         action.append(input("\n Write a note if needed: \t").strip(' ').replace(",","."))     
         # id 9
-        action_id = generate_id(file_names["actions_file"])
+        action_id = generate_id()
         action.append(action_id)
         # Append action to file      
         append_new_entry_to_file(action, file_names["actions_file"], backup_file_names["backup_file_" + "actions_file"])
@@ -190,7 +205,7 @@ def add_project():
         # Notes 3
         project.append(input("\n Write a note if needed: \t").strip(' ').replace(",","."))
         # Id 4
-        project_id = generate_id(file_names["projects_file"])
+        project_id = generate_id()
         project.append(project_id)
         # Append entry to file      
         append_new_entry_to_file(project, file_names["projects_file"], backup_file_names["backup_file_" + "projects_file"])
@@ -225,7 +240,7 @@ def add_reminder():
         action.append(add_deadline("reminder"))
 
         # generate id
-        reminder_id = generate_id(file_names["reminders_file"])
+        reminder_id = generate_id()
         action.append(reminder_id)
 
         # Append entry to file      
@@ -304,6 +319,9 @@ def write_file(file_name, data):
 def archive_entry(entry):
     append_new_entry_to_file(entry, file_names["archives_file"], backup_file_names["backup_file_" + 'archives_file'])
 
+def trash_file(entry):
+    append_new_entry_to_file(entry, file_names["trash_file"], backup_file_names["backup_file_" + 'trash_file'])
+
 def delete_action(action_id, to_archive):
     found = False
     found_action = []
@@ -316,13 +334,19 @@ def delete_action(action_id, to_archive):
             print(found_action)
             if to_archive:
                 archive_entry(found_action)
+            else:
+
             break
     if found:
         write_file(file_names['actions_file'], actions)
         backup_file(file_names['actions_file'],backup_file_names["backup_file_" + 'actions_file']) # perhaps that's a bit over the top
 
-def edit_action():
+def edit_action(action_id):
     print(lame_excuse)
+
+def display_and_choose_actions():
+    actions = load_file(file_names["actions_file"])
+    return choose_action_id()
 
 def argument_parser():
     myepilog = 'sp.py Copyright (C) 2014  Miguel de Luis Espinosa.\n This program comes with ABSOLUTELY NO WARRANTY. \n This is free software, and you are welcome to redistribute it under certain conditions'
@@ -355,8 +379,7 @@ def argument_parser():
     elif args.aP:
         add_person()
     elif args.da:
-        actions = load_file(file_names["actions_file"])
-        action_id = choose_action_id()
+        action_id = display_and_choose_actions()
         write_file(file_names["actions_file"], do_action(action_id, actions))
         backup_file(file_names["actions_file"], backup_file_names["backup_file_"+ "actions_file"])
     elif args.wr:
@@ -364,15 +387,18 @@ def argument_parser():
     elif args.fp:
         print(lame_excuse)
     elif args.fa:
-        print(lame_excuse)
+        action_id = display_and_choose_actions()
+        deleted_action = delete_action("action_id", True)
+        print("Action filed: \n{}".format(deleted_action))
     elif args.ea:
-        actions = load_file(file_names["actions_file"])
-        action_id = choose_action_id()
+        action_id = display_and_choose_actions()
+        edit_action(action_id)
     elif args.ep:
         print(lame_excuse)
     elif args.dela:
-        a = delete_action("3", True) # for testing purposes
-        b = delete_action("4", False)
+        action_id = display_and_choose_actions()
+        deleted_action = delete_action("action_id", False)
+        print("Action deleted: \n{}".format(deleted_action))
     else:
         print(lame_excuse) 
 
