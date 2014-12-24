@@ -300,7 +300,7 @@ def show_actions():
 def choose_action_id():
     choice = input("Input id number or type n for actions\t")
     if choice == "n":
-        show_projects()
+        show_actions()
         choice = input("Input id number")
           
     return choice
@@ -308,7 +308,7 @@ def choose_action_id():
 def do_action(action_id, actions):
     for i in range(0, len(actions)):
         if actions[i][-1] == action_id:
-           actions[i][4] = "done"
+           actions[i][4] = "x"
     return actions
 
 def write_file(file_name, data):
@@ -335,7 +335,7 @@ def delete_action(action_id, to_archive):
             if to_archive:
                 archive_entry(found_action)
             else:
-
+                trash_file(found_action)
             break
     if found:
         write_file(file_names['actions_file'], actions)
@@ -343,10 +343,6 @@ def delete_action(action_id, to_archive):
 
 def edit_action(action_id):
     print(lame_excuse)
-
-def display_and_choose_actions():
-    actions = load_file(file_names["actions_file"])
-    return choose_action_id()
 
 def argument_parser():
     myepilog = 'sp.py Copyright (C) 2014  Miguel de Luis Espinosa.\n This program comes with ABSOLUTELY NO WARRANTY. \n This is free software, and you are welcome to redistribute it under certain conditions'
@@ -379,7 +375,8 @@ def argument_parser():
     elif args.aP:
         add_person()
     elif args.da:
-        action_id = display_and_choose_actions()
+        actions = load_file(file_names["actions_file"])
+        action_id = choose_action_id()
         write_file(file_names["actions_file"], do_action(action_id, actions))
         backup_file(file_names["actions_file"], backup_file_names["backup_file_"+ "actions_file"])
     elif args.wr:
@@ -387,7 +384,8 @@ def argument_parser():
     elif args.fp:
         print(lame_excuse)
     elif args.fa:
-        action_id = display_and_choose_actions()
+        actions = load_file(file_names["actions_file"])
+        action_id = choose_action_id()   
         deleted_action = delete_action("action_id", True)
         print("Action filed: \n{}".format(deleted_action))
     elif args.ea:
@@ -396,7 +394,8 @@ def argument_parser():
     elif args.ep:
         print(lame_excuse)
     elif args.dela:
-        action_id = display_and_choose_actions()
+        actions = load_file(file_names["actions_file"])
+        action_id = choose_action_id()
         deleted_action = delete_action("action_id", False)
         print("Action deleted: \n{}".format(deleted_action))
     else:
