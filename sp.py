@@ -210,7 +210,7 @@ def add_project():
         #Date Gathered  1
         project.append(datetime.today())
         # date due 2
-        action.append(add_deadline("project"))        
+        project.append(add_deadline("project"))        
         # Notes 3
         project.append(input("\n Write a note if needed: \t").strip(' ').replace(",","."))
         # Id 4
