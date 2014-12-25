@@ -48,10 +48,11 @@ def load_default_settings(settings_file):
                 f.write(contexts[i]+"\n")
     projects = load_file(file_names["projects_file"])
     if len(projects) == 0:
+        default_projects_data=",,,,"
         projects = settings[1]
         for i in range(0, len(projects)):
             with open(file_names["projects_file"], 'a') as g:
-                g.write(projects[i]+"\n")
+                g.write(projects[i] + default_projects_data + "default" + str(i) + "\n")
 
 def load_file(file_to_load): #loads a csv file as a list
     csv_file_as_list = []
@@ -311,8 +312,8 @@ def show_projects():
         project_actions = filter_file(projects[i][0],1,file_names["actions_file"])
         number_actions = len(project_actions)
         done_actions = 0
-        print("\n\tProject: " + projects[i][0] + "\n\n")
-        print("\n\tId: {}\n".format(projects[i][-1]))
+        print("\n\tProject: " + projects[i][0])
+        print("\n\tId: {}\tDate due: {}\n".format(projects[i][-1], projects[i][2]))
         for j in range(0, len(project_actions)):
             this_pa = project_actions[j]
             if this_pa[4] == "x":
@@ -322,12 +323,18 @@ def show_projects():
     return
 
 def choose_action_id():
-    choice = input("Input id number or type n for actions\t")
+    choice = input("Enter id number or type n for actions\t")
     if choice == "n":
         show_actions()
-        choice = input("Input id number")
+        choice = input("Enter id number")
           
     return choice
+
+def choose_project_id():
+    choice = input("Enter id number or type n to review projects")
+    if choice == "n":
+        show_projects()
+        choice = ("Enter id number")
 
 def do_action(action_id, actions):
     for i in range(0, len(actions)):
@@ -433,7 +440,7 @@ def argument_parser():
     elif args.wr:
         print(lame_excuse)
     elif args.fp:
-        # project_id = choose_project_id()
+        project_id = choose_project_id()
         # file_project(project_id)
         print(lame_excuse)
     elif args.fa:
@@ -450,7 +457,7 @@ def argument_parser():
         deleted_action = delete_action(action_id, False)
         print("Action deleted: \n{}".format(deleted_action))
     elif args.delp:
-        # project_id = choose_project_id()
+        project_id = choose_project_id()
         # delete_project(project_id)
         print(lame_excuse)
     elif args.sp:
