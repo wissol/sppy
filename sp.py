@@ -12,6 +12,8 @@ backup_directory = '/Users/migueldeluisespinosa/Dropbox/sppy/bu' # change to you
 
 states = {"t":"to do", "x":"done", "d": "delegated to", "w": "waiting for"}
 
+lame_excuse = "sorry, not implemented yet"
+
 def generate_id():
     last_id = load_file("id.csv")
     try:
@@ -303,6 +305,22 @@ def show_actions():
         print("\n\t" + "=" * 80 + "\n")
     return
 
+def show_projects():
+    projects = load_file(file_names["projects_file"])
+    for i in range(0, len(projects)):
+        project_actions = filter_file(projects[i][0],1,file_names["actions_file"])
+        number_actions = len(project_actions)
+        done_actions = 0
+        print("\n\tProject: " + projects[i][0] + "\n\n")
+        print("\n\tId: {}\n".format(projects[i][-1]))
+        for j in range(0, len(project_actions)):
+            this_pa = project_actions[j]
+            if this_pa[4] == "x":
+                done_actions += 1
+        print("\n\tActions: {}\tDone: {}".format(number_actions, done_actions))
+        print("\n\t" + "=" * 80 + "\n")
+    return
+
 def choose_action_id():
     choice = input("Input id number or type n for actions\t")
     if choice == "n":
@@ -366,21 +384,32 @@ def edit_action(action_id):
     write_file(file_names['actions_file'], actions)
     append_new_entry_to_file(action_to_edit, file_names["actions_file"], backup_file_names["backup_file_actions_file"])
 
+def file_project(id):
+    #gather project actions
+    #file project actions
+    #file project
+    print(lame_excuse)
+
+def delete_project(id):
+    #gather project actions
+    #trash project actions
+    #trash project
+    print(lame_excuse)
+
 def argument_parser():
     myepilog = 'sp.py Copyright (C) 2014  Miguel de Luis Espinosa.\n This program comes with ABSOLUTELY NO WARRANTY. \n This is free software, and you are welcome to redistribute it under certain conditions'
     parser = argparse.ArgumentParser(description=' Simple personal poductivity app', epilog= myepilog)
     arguments = {"-aa":"add a new action", "-ap": "add a new project", "-ac":"add a new context", 
                  "-aP" : "add a new person", "-ar" : "add reminder",
-                 "-sr" : "show reminders", "-sap": "show actions by project", "-da" : "set action as done",
-                 "-wr" : "weekly review", "-fp": "file project", "-fa": "file action", 
-                 "-ea" : "edit action", "-ep" : "edit project", "-dela": "delete action"}
+                 "-sr" : "show reminders", "-sa": "show actions by project", "-da" : "set action as done",
+                 "-wr" : "weekly review", "-fp": "file project and its actions", "-fa": "file action", 
+                 "-ea" : "edit action", "-ep" : "edit project", "-dela": "delete action",
+                 "-delp" : "delete project and its actions", "-sp":"show projects"}
    
     for key in arguments:
         parser.add_argument(key, action = 'store_true', help= arguments[key])
       
     args = parser.parse_args()
-
-    lame_excuse = "sorry, not implemented yet"
 
     if args.aa:
         add_action()
@@ -392,7 +421,7 @@ def argument_parser():
         add_reminder()
     elif args.sr:
         show_reminders()
-    elif args.sap:
+    elif args.sa:
         show_actions()
     elif args.aP:
         add_person()
@@ -404,6 +433,8 @@ def argument_parser():
     elif args.wr:
         print(lame_excuse)
     elif args.fp:
+        # project_id = choose_project_id()
+        # file_project(project_id)
         print(lame_excuse)
     elif args.fa:
         action_id = choose_action_id()   
@@ -418,6 +449,12 @@ def argument_parser():
         action_id = choose_action_id()
         deleted_action = delete_action(action_id, False)
         print("Action deleted: \n{}".format(deleted_action))
+    elif args.delp:
+        # project_id = choose_project_id()
+        # delete_project(project_id)
+        print(lame_excuse)
+    elif args.sp:
+        show_projects()
     else:
         print(lame_excuse) 
 
