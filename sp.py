@@ -334,7 +334,8 @@ def choose_project_id():
     choice = input("Enter id number or type n to review projects")
     if choice == "n":
         show_projects()
-        choice = ("Enter id number")
+        choice = input("Enter id number")
+    return choice
 
 def do_action(action_id, actions):
     for i in range(0, len(actions)):
