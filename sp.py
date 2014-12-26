@@ -52,7 +52,7 @@ def load_default_settings(settings_file):
         projects = settings[1]
         for i in range(0, len(projects)):
             with open(file_names["projects_file"], 'a') as g:
-                g.write(projects[i] + default_projects_data + "default" + str(i) + "\n")
+                g.write(projects[i] + default_projects_data + "pd" + str(i) + "\n")
 
 def load_file(file_to_load): #loads a csv file as a list
     csv_file_as_list = []
@@ -187,7 +187,7 @@ def add_action():
         # Notes 8
         action.append(input("\n Write a note if needed: \t").strip(' ').replace(",","."))     
         # id 9
-        action_id = generate_id()
+        action_id = "a" + generate_id()
         action.append(action_id)
         # Append action to file      
         append_new_entry_to_file(action, file_names["actions_file"], backup_file_names["backup_file_" + "actions_file"])
@@ -214,7 +214,7 @@ def add_project():
         # Notes 3
         project.append(input("\n Write a note if needed: \t").strip(' ').replace(",","."))
         # Id 4
-        project_id = generate_id()
+        project_id = "p" + generate_id()
         project.append(project_id)
         # Append entry to file      
         append_new_entry_to_file(project, file_names["projects_file"], backup_file_names["backup_file_" + "projects_file"])
@@ -231,6 +231,9 @@ def add_context():
         context.append(input("\n Name: \t").strip(' ').replace(",",";"))
         #Description
         context.append(input("\n Description: \t").strip(' ').replace(",",";"))
+        #Id
+        context_id = "c" + generate_id()
+        context.append(context_id)
         # Append entry to file      
         append_new_entry_to_file(context, file_names["contexts_file"], backup_file_names["backup_file_" + "contexts_file"])
         # Ending the loop
@@ -249,7 +252,7 @@ def add_reminder():
         action.append(add_deadline("reminder"))
 
         # generate id
-        reminder_id = generate_id()
+        reminder_id = "r" + generate_id()
         action.append(reminder_id)
 
         # Append entry to file      
@@ -268,7 +271,11 @@ def add_person():
         person.append(input("\n Name: \t").strip(' ').replace(",",";"))
 
         # contact_details
-        person.append(input("\n Contact: \t").strip(' ').replace(",",";"))
+        person.append(input("\n Contact data: \t").strip(' ').replace(",",";"))
+        
+        # id
+        person_id = "person" + generate_id()
+        person.append(person_id)
 
         # Append entry to file      
         append_new_entry_to_file(person, file_names["people_file"], backup_file_names["backup_file_" + "people_file"])
@@ -404,16 +411,20 @@ def gather_project_actions(project_id):
             project_actions_ids.append(all_actions[i][-1])
     return project_actions_ids
 
+def delete_project_actions(project_actions_ids, tofile):
+    for i in range(0, project_actions_ids):
+        delete_action(project_actions_ids[i],tofile)
+
 def file_project(project_id):
     project_actions_ids = gather_project_actions(project_id)
     print(project_actions_ids)
-    #file project actions
+    delete_project_actions(project_actions_ids, True)
     #file project
     print(lame_excuse)
 
 def delete_project(project_id):
     project_actions_ids = gather_project_actions(project_id)
-    #trash project actions
+    delete_project_actions(project_actions_ids, False)
     #trash project
     print(lame_excuse)
 
@@ -482,3 +493,4 @@ def argument_parser():
 backup_file_names = generate_backup_file_names(backup_directory, file_names)
 load_default_settings(settings_file)
 argument_parser()
+
