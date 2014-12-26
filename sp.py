@@ -148,7 +148,7 @@ def evaluate_loop(thing):
     return evaluation
 
 def add_deadline(thing):
-    deadline = input("Is this {} under a deadline? Press 'y' to add one".format(thing))
+    deadline = input("Is this {} under a deadline? Press 'y' to add one\t".format(thing))
     if deadline == "y":
         return filter_dates(thing)
     else:
@@ -210,7 +210,7 @@ def add_project():
         #Date Gathered  1
         project.append(datetime.today())
         # date due 2
-        pr.append(add_deadline("project"))        
+        project.append(add_deadline("project"))        
         # Notes 3
         project.append(input("\n Write a note if needed: \t").strip(' ').replace(",","."))
         # Id 4
@@ -381,6 +381,25 @@ def delete_action(action_id, to_archive):
         backup_file(file_names['actions_file'],backup_file_names["backup_file_" + 'actions_file']) # perhaps that's a bit over the top
         return found_action
 
+def delete_project(project_id, to_archive):
+    found = False
+    found_project = []
+    backup_file(file_names['projects_file'],backup_file_names["backup_file_" + 'projects_file'])
+    projects = load_file(file_names['projects_file'])
+    for i in range(0, len(projects)):
+        if projects[i][-1] == project_id:
+            found_project = projects.pop(i)
+            found = True
+            if to_archive:
+                archive_entry(found_project)
+            else:
+                trash_file(found_project)
+            break
+    if found:
+        write_file(file_names['projects_file'], projects)
+        backup_file(file_names['projects_file'],backup_file_names["backup_file_" + 'projects_file']) # perhaps that's a bit over the top
+        return found_project
+
 def edit_action(action_id):
     # get action
     actions = load_file(file_names["actions_file"])
@@ -412,21 +431,15 @@ def gather_project_actions(project_id):
     return project_actions_ids
 
 def delete_project_actions(project_actions_ids, tofile):
-    for i in range(0, project_actions_ids):
+    for i in range(0, len(project_actions_ids)):
         delete_action(project_actions_ids[i],tofile)
 
 def file_project(project_id):
     project_actions_ids = gather_project_actions(project_id)
     print(project_actions_ids)
     delete_project_actions(project_actions_ids, True)
-    #file project
-    print(lame_excuse)
-
-def delete_project(project_id):
-    project_actions_ids = gather_project_actions(project_id)
-    delete_project_actions(project_actions_ids, False)
-    #trash project
-    print(lame_excuse)
+    project_filed = delete_project(project_id, True)
+    print("{} filed".format(project_filed))
 
 def argument_parser():
     myepilog = 'sp.py Copyright (C) 2014  Miguel de Luis Espinosa.\n This program comes with ABSOLUTELY NO WARRANTY. \n This is free software, and you are welcome to redistribute it under certain conditions'
@@ -483,8 +496,11 @@ def argument_parser():
         print("Action deleted: \n{}".format(deleted_action))
     elif args.delp:
         project_id = choose_project_id()
-        # delete_project(project_id)
-        print(lame_excuse)
+        project_actions_ids = gather_project_actions(project_id)
+        print(project_actions_ids)
+        delete_project_actions(project_actions_ids, False)
+        project_filed = delete_project(project_id, False)
+        print("{} filed".format(project_filed))
     elif args.sp:
         show_projects()
     else:
