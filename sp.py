@@ -81,7 +81,7 @@ def filter_dates(thing):
     while len(year) == 0 or int(year) < 2013 or int(year) > 2114:
         year = input("\n Year (mm): \t").strip(', ')
 
-    add_hour = input("Does this {} must be accomplished before a certain hour? Type y for 'yes'".format(thing))
+    add_hour = input("Does this {} must be accomplished before a certain hour? Type y for 'yes'\t".format(thing))
     if add_hour == "y":
         while len(hour) == 0 or int(hour) > 24 or int(hour) < 1:
             hour = input("\n Hour (24): \t").strip(', ')
@@ -210,7 +210,7 @@ def add_project():
         #Date Gathered  1
         project.append(datetime.today())
         # date due 2
-        project.append(add_deadline("project"))        
+        pr.append(add_deadline("project"))        
         # Notes 3
         project.append(input("\n Write a note if needed: \t").strip(' ').replace(",","."))
         # Id 4
@@ -391,14 +391,27 @@ def edit_action(action_id):
     write_file(file_names['actions_file'], actions)
     append_new_entry_to_file(action_to_edit, file_names["actions_file"], backup_file_names["backup_file_actions_file"])
 
-def file_project(id):
-    #gather project actions
+def gather_project_actions(project_id):
+    all_actions = load_file(file_names["actions_file"])
+    projects = load_file(file_names["projects_file"])
+    project_actions_ids = []
+    for i in range(0, len(projects)):
+        if projects[i][-1] == project_id:
+            project_description = projects[i][0]
+    for i in range(0, len(all_actions)):
+        if all_actions[i][1] == project_description:
+            project_actions_ids.append(all_actions[i][-1])
+    return project_actions_ids
+
+def file_project(project_id):
+    project_actions_ids = gather_project_actions(project_id)
+    print(project_actions_ids)
     #file project actions
     #file project
     print(lame_excuse)
 
-def delete_project(id):
-    #gather project actions
+def delete_project(project_id):
+    project_actions_ids = gather_project_actions(project_id)
     #trash project actions
     #trash project
     print(lame_excuse)
@@ -441,7 +454,7 @@ def argument_parser():
         print(lame_excuse)
     elif args.fp:
         project_id = choose_project_id()
-        # file_project(project_id)
+        file_project(project_id)
         print(lame_excuse)
     elif args.fa:
         action_id = choose_action_id()   
