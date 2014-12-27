@@ -507,21 +507,7 @@ def choose_and_delete_project():
     project_filed = delete_project(project_id, False)
     print("{} deleted".format(project_filed))
 
-arguments = {"-aa":"add a new action", "-ap": "add a new project", "-ac":"add a new context", 
-                 "-aP" : "add a new person", "-ar" : "add reminder",
-                 "-sr" : "show reminders", "-sa": "show actions by project", "-doa" : "set an action as done",
-                 "-wr" : "do a weekly review", "-fp": "file project and its actions", "-fa": "file action", 
-                 "-ea" : "edit action", "-ep" : "edit project", "-dela": "delete action",
-                 "-delp" : "delete project and its actions", "-sp":"show projects"}
-
-arguments_as_funtion_names = {"aa":add_action, "ap":add_project, "ac":add_context,
-                              "aP":add_person, "ar":add_reminder,
-                              "sr":show_reminders, "sa":show_actions, "doa":do_action,
-                              "wr":weekly_review, "fp":choose_and_file_project, "fa":file_action,
-                              "ea":edit_action, "ep":choose_and_edit_project, "dela":choose_and_delete_action,
-                              "delp":choose_and_delete_project, "sp":show_projects}
-
-def show_menu(arguments):
+def show_menu():
     choice = choose_in_dictionary(arguments)
     modified_choice = choice[1:]
     print("\n\tYou have chosen to {}".format(arguments[choice]))
@@ -530,48 +516,34 @@ def show_menu(arguments):
 def evaluate_menu(choice):
     arguments_as_funtion_names[choice]()
 
+arguments = {"-aa":"add a new action", "-ap": "add a new project", "-ac":"add a new context", 
+                 "-aP" : "add a new person", "-ar" : "add reminder",
+                 "-sr" : "show reminders", "-sa": "show actions by project", "-doa" : "set an action as done",
+                 "-wr" : "do a weekly review", "-fp": "file project and its actions", "-fa": "file action", 
+                 "-ea" : "edit action", "-ep" : "edit project", "-dela": "delete action",
+                 "-delp" : "delete project and its actions", "-sp":"show projects",
+                 "-im" : "show interactive menu"}
+
+arguments_as_funtion_names = {"aa":add_action, "ap":add_project, "ac":add_context,
+                              "aP":add_person, "ar":add_reminder,
+                              "sr":show_reminders, "sa":show_actions, "doa":do_action,
+                              "wr":weekly_review, "fp":choose_and_file_project, "fa":file_action,
+                              "ea":edit_action, "ep":choose_and_edit_project, "dela":choose_and_delete_action,
+                              "delp":choose_and_delete_project, "sp":show_projects, "im":show_menu}
+
 def evaluate_arguments(args):
-    if args.aa:
-        add_action()
-    elif args.ap:
-        add_project()
-    elif args.ac:
-        add_context()
-    elif args.ar:
-        add_reminder()
-    elif args.sr:
-        show_reminders()
-    elif args.sa:
-        show_actions()
-    elif args.aP:
-        add_person()
-    elif args.doa:
-        do_action()
-    elif args.wr:
-        weekly_review()
-    elif args.fp:
-        choose_and_file_project()
-    elif args.fa:
-        file_action()
-    elif args.ea:
-        choose_and_edit_action()
-    elif args.ep:
-        choose_and_edit_project()
-    elif args.dela:
-        choose_and_delete_action()
-    elif args.delp:
-        choose_and_delete_project()
-    elif args.sp:
-        show_projects()
-    else:
-        show_menu(arguments)
+    dict_args = vars(args)
+    for key in dict_args:
+        if dict_args[key] != None:
+            arguments_as_funtion_names[key]()
 
 def argument_parser(arguments):
     myepilog = 'sp.py Copyright (C) 2014  Miguel de Luis Espinosa.\n This program comes with ABSOLUTELY NO WARRANTY. \n This is free software, and you are welcome to redistribute it under certain conditions'
     parser = argparse.ArgumentParser(description=' Simple personal poductivity app', epilog= myepilog)
-       
+    parser.set_defaults(im="im")
+           
     for key in arguments:
-        parser.add_argument(key, action = 'store_true', help= arguments[key])
+        parser.add_argument(key, action = 'store_const', const= key[1:], help= arguments[key])
       
     args = parser.parse_args()
 
