@@ -41,18 +41,35 @@ def load_default_settings(settings_file):
     generate_files(backup_file_names)
     settings = load_file(settings_file)
     contexts = load_file(file_names["contexts_file"])
-    if len(contexts) == 0:
-        contexts = settings[0]
-        for i in range(0, len(contexts)):
-            with open(file_names["contexts_file"], 'a') as f:
-                f.write(contexts[i]+"\n")
+    actions = load_file(file_names["actions_file"])
     projects = load_file(file_names["projects_file"])
+    reminders = load_file(file_names["reminders_file"])
+    people = load_file(file_names["people_file"])
     if len(projects) == 0:
         default_projects_data=",,,,"
         projects = settings[1]
+        projects_headers = settings[6]
+        append_file(file_names["projects_file"], projects_headers)
         for i in range(0, len(projects)):
             with open(file_names["projects_file"], 'a') as g:
                 g.write(projects[i] + default_projects_data + "pd" + str(i) + "\n")
+    if len(actions) == 0:            
+        actions_headers = settings[2]
+        append_file(file_names["actions_file"], actions_headers)
+    if len(contexts) == 0:
+        contexts = settings[0]
+        contexts_headers = settings[3]
+        append_file(file_names["contexts_file"],contexts_headers)
+        default_contexts_data=",,"
+        for i in range(0, len(contexts)):
+            with open(file_names["contexts_file"], 'a') as f:
+                f.write(contexts[i]+ default_contexts_data + "cd" + str(i) + "\n")
+    if len(reminders) == 0:
+        reminders_headers = settings[4]
+        append_file(file_names["reminders_file"], reminders_headers)
+    if len(people) == 0:
+        people_headers = settings[5]
+        append_file(file_names["people_file"], people_headers)
 
 def load_file(file_to_load): #loads a csv file as a list
     csv_file_as_list = []
@@ -94,7 +111,7 @@ def choose_in_file(file_to_choose):
 
     file_as_list = load_file(file_to_choose)
     
-    for key in range(0,len(file_as_list)):
+    for key in range(1,len(file_as_list)):
         print("Enter {} for {}".format(key,file_as_list[key][0]))
 
     menu = input("\n Choose an item or add a new one \t")
