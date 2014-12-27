@@ -13,6 +13,8 @@ arguments = {"-aa":"add a new action", "-ap": "add a new project", "-ac":"add a 
                  "-ea" : "edit action", "-ep" : "edit project", "-dela": "delete action",
                  "-delp" : "delete project and its actions", "-sp":"show projects"}
 
+
+
 settings_file = file_names["settings_file"]
 
 backup_directory = '../sppy/bu' # move to settings
@@ -467,12 +469,68 @@ def file_project(project_id):
     project_filed = delete_project(project_id, True)
     print("{} filed".format(project_filed))
 
+def weekly_review():
+    print(lame_excuse)
+
+def file_action():
+    action_id = choose_id("action")   
+    deleted_action = delete_action(action_id, True)
+    print("Action filed: \n{}".format(deleted_action))
+
+def do_action():
+    actions = load_file(file_names["actions_file"])
+    action_id = choose_id("action")
+    write_file(file_names["actions_file"], do_action(action_id, actions))
+    backup_file(file_names["actions_file"], backup_file_names["backup_file_"+ "actions_file"])
+
+def choose_and_file_project():
+    project_id = choose_id("project")
+    file_project(project_id)
+
+def choose_and_edit_action():
+    action_id = choose_id("action")
+    edit_action(action_id)
+
+def choose_and_edit_project():
+    project_id = choose_id("project")
+    # edit_project(project_id)
+    print(lame_excuse)
+
+def choose_and_delete_action():
+    action_id = choose_id("action")
+    deleted_action = delete_action(action_id, False)
+    print("Action deleted: \n{}".format(deleted_action))
+
+def choose_and_delete_project():
+    project_id = choose_id("project")
+    project_actions_ids = gather_project_actions(project_id)
+    print(project_actions_ids)
+    delete_project_actions(project_actions_ids, False)
+    project_filed = delete_project(project_id, False)
+    print("{} deleted".format(project_filed))
+
+arguments = {"-aa":"add a new action", "-ap": "add a new project", "-ac":"add a new context", 
+                 "-aP" : "add a new person", "-ar" : "add reminder",
+                 "-sr" : "show reminders", "-sa": "show actions by project", "-doa" : "set an action as done",
+                 "-wr" : "do a weekly review", "-fp": "file project and its actions", "-fa": "file action", 
+                 "-ea" : "edit action", "-ep" : "edit project", "-dela": "delete action",
+                 "-delp" : "delete project and its actions", "-sp":"show projects"}
+
+arguments_as_funtion_names = {"aa":add_action, "ap":add_project, "ac":add_context,
+                              "aP":add_person, "ar":add_reminder,
+                              "sr":show_reminders, "sa":show_actions, "doa":do_action,
+                              "wr":weekly_review, "fp":choose_and_file_project, "fa":file_action,
+                              "ea":edit_action, "ep":choose_and_edit_project, "dela":choose_and_delete_action,
+                              "delp":choose_and_delete_project, "sp":show_projects}
+
 def show_menu(arguments):
     choice = choose_in_dictionary(arguments)
-    evaluate_menu(choice)
+    modified_choice = choice[1:]
+    print("\n\tYou have chosen to {}".format(arguments[choice]))
+    evaluate_menu(modified_choice)
 
 def evaluate_menu(choice):
-    print(lame_excuse)
+    arguments_as_funtion_names[choice]()
 
 def evaluate_arguments(args):
     if args.aa:
@@ -489,36 +547,22 @@ def evaluate_arguments(args):
         show_actions()
     elif args.aP:
         add_person()
-    elif args.da:
-        actions = load_file(file_names["actions_file"])
-        action_id = choose_id("action")
-        write_file(file_names["actions_file"], do_action(action_id, actions))
-        backup_file(file_names["actions_file"], backup_file_names["backup_file_"+ "actions_file"])
+    elif args.doa:
+        do_action()
     elif args.wr:
-        print(lame_excuse)
+        weekly_review()
     elif args.fp:
-        project_id = choose_id("project")
-        file_project(project_id)
+        choose_and_file_project()
     elif args.fa:
-        action_id = choose_id("action")   
-        deleted_action = delete_action(action_id, True)
-        print("Action filed: \n{}".format(deleted_action))
+        file_action()
     elif args.ea:
-        action_id = choose_id("action")
-        edit_action(action_id)
+        choose_and_edit_action()
     elif args.ep:
-        print(lame_excuse)
+        choose_and_edit_project()
     elif args.dela:
-        action_id = choose_id("action")
-        deleted_action = delete_action(action_id, False)
-        print("Action deleted: \n{}".format(deleted_action))
+        choose_and_delete_action()
     elif args.delp:
-        project_id = choose_id("project")
-        project_actions_ids = gather_project_actions(project_id)
-        print(project_actions_ids)
-        delete_project_actions(project_actions_ids, False)
-        project_filed = delete_project(project_id, False)
-        print("{} deleted".format(project_filed))
+        choose_and_delete_project()
     elif args.sp:
         show_projects()
     else:
