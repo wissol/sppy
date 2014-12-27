@@ -13,8 +13,6 @@ arguments = {"-aa":"add a new action", "-ap": "add a new project", "-ac":"add a 
                  "-ea" : "edit action", "-ep" : "edit project", "-dela": "delete action",
                  "-delp" : "delete project and its actions", "-sp":"show projects"}
 
-
-
 settings_file = file_names["settings_file"]
 
 backup_directory = '../sppy/bu' # move to settings
