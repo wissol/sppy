@@ -1,2 +1,7 @@
 Computer,Home,Office,Errands,Phone
 Inbox,None
+Date Gathered,Project,Description,Context,State,State Date,Deadline,Asignee,Notes,Id
+Name,Description,Id
+Description,Deadline,Id
+Name,Contact Data,Id
+Description,Date Gathered,Deadline,Notes,Id
