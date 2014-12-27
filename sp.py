@@ -15,7 +15,15 @@ arguments = {"-aa":"add a new action", "-ap": "add a new project", "-ac":"add a 
 
 settings_file = file_names["settings_file"]
 
-backup_directory = '/Users/migueldeluisespinosa/Dropbox/sppy/bu' # change to your own backup directory
+backup_directory = '../sppy/bu' # move to settings
+
+temporary_backup_directory = '/tmp'
+
+if not os.path.exists(backup_directory):
+    os.makedirs(backup_directory)
+
+if not os.path.exists(backup_directory + temporary_backup_directory):
+    os.makedirs(backup_directory + temporary_backup_directory)
 
 states = {"t":"to do", "x":"done", "d": "delegated to", "w": "waiting for"}
 
@@ -147,7 +155,7 @@ def append_file(file_name, entry):
 
 def backup_file(work_file, backup_file_name):
     # copy work back up file to a new time-stamped backup file
-    temporal_backup_file = backup_file_name + time.strftime("%d_%m_%Y_at_%H_%M")+ '.csv'
+    temporal_backup_file = backup_file_name[:10] + temporary_backup_directory + backup_file_name[10:-4] + time.strftime("%d_%m_%Y_at_%H_%M")+ '.csv'
     shutil.copy2(work_file,temporal_backup_file)
     
     # append to work backup file    
