@@ -198,6 +198,7 @@ def add_action():
         action.append(add_deadline("action"))
         # person 7
         if action[4] == "w" or action[4] == "d":
+            print("\t Person associated with this action:\n)
             action.append(choose_in_file(file_names["people_file"]))
         else:
             action.append("")
@@ -210,6 +211,7 @@ def add_action():
         append_new_entry_to_file(action, file_names["actions_file"], backup_file_names["backup_file_" + "actions_file"])
 
         #offer to add reminder?
+        #autor_reminder() ?
 
         # Ending the loop
         goOn = evaluate_loop("action")     
