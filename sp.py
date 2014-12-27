@@ -165,7 +165,7 @@ def evaluate_loop(thing):
     return evaluation
 
 def add_deadline(thing):
-    deadline = input("Is this {} under a deadline? Press 'y' to add one\t".format(thing))
+    deadline = input("\n Is this {} under a deadline? Press 'y' to add one\t".format(thing))
     if deadline == "y":
         return filter_dates(thing)
     else:
@@ -198,7 +198,7 @@ def add_action():
         action.append(add_deadline("action"))
         # person 7
         if action[4] == "w" or action[4] == "d":
-            print("\t Person associated with this action:\n)
+            print("\t Person associated with this action:\n")
             action.append(choose_in_file(file_names["people_file"]))
         else:
             action.append("")
@@ -348,19 +348,14 @@ def show_projects():
         print("\n\t" + "=" * 80 + "\n")
     return
 
-def choose_action_id():
-    choice = input("Enter id number or type n for actions\t")
-    if choice == "n":
-        show_actions()
-        choice = input("Enter id number")
-          
-    return choice
-
-def choose_project_id():
-    choice = input("Enter id number or type n to review projects")
-    if choice == "n":
-        show_projects()
-        choice = input("Enter id number")
+def choose_id(thing):
+    choice = input("\n\tEnter id or type s to show {}\t".format(thing))
+    if choice == "s":
+        if thing == "action":
+            show_actions()
+        else:
+            show_projects()
+        choice = input("Enter id\t")
     return choice
 
 def do_action(action_id, actions):
@@ -491,35 +486,34 @@ def argument_parser():
         add_person()
     elif args.da:
         actions = load_file(file_names["actions_file"])
-        action_id = choose_action_id()
+        action_id = choose_id("action")
         write_file(file_names["actions_file"], do_action(action_id, actions))
         backup_file(file_names["actions_file"], backup_file_names["backup_file_"+ "actions_file"])
     elif args.wr:
         print(lame_excuse)
     elif args.fp:
-        project_id = choose_project_id()
+        project_id = choose_id("project")
         file_project(project_id)
-        print(lame_excuse)
     elif args.fa:
-        action_id = choose_action_id()   
+        action_id = choose_id("action")   
         deleted_action = delete_action(action_id, True)
         print("Action filed: \n{}".format(deleted_action))
     elif args.ea:
-        action_id = choose_action_id()
+        action_id = choose_id("action")
         edit_action(action_id)
     elif args.ep:
         print(lame_excuse)
     elif args.dela:
-        action_id = choose_action_id()
+        action_id = choose_id("action")
         deleted_action = delete_action(action_id, False)
         print("Action deleted: \n{}".format(deleted_action))
     elif args.delp:
-        project_id = choose_project_id()
+        project_id = choose_id("project")
         project_actions_ids = gather_project_actions(project_id)
         print(project_actions_ids)
         delete_project_actions(project_actions_ids, False)
         project_filed = delete_project(project_id, False)
-        print("{} filed".format(project_filed))
+        print("{} deleted".format(project_filed))
     elif args.sp:
         show_projects()
     else:
