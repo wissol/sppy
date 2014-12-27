@@ -1,10 +1,17 @@
-import os, csv, shutil, time, argparse
+import os, csv, shutil, time, argparse, collections
 from datetime import datetime, date
 
 file_names = {"people_file":"people.csv","projects_file":"p.csv",
               "actions_file":"a.csv","contexts_file":"contexts.csv",
               "reminders_file":"r.csv", "archives_file":"archives.csv",
               "last_id_file":"id.csv", "trash_file":"trash.csv", "settings_file":"s.csv"}
+
+arguments = {"-aa":"add a new action", "-ap": "add a new project", "-ac":"add a new context", 
+                 "-aP" : "add a new person", "-ar" : "add reminder",
+                 "-sr" : "show reminders", "-sa": "show actions by project", "-da" : "set action as done",
+                 "-wr" : "weekly review", "-fp": "file project and its actions", "-fa": "file action", 
+                 "-ea" : "edit action", "-ep" : "edit project", "-dela": "delete action",
+                 "-delp" : "delete project and its actions", "-sp":"show projects"}
 
 settings_file = file_names["settings_file"]
 
@@ -107,34 +114,31 @@ def filter_dates(thing):
 
     return "{}-{}-{} {}:{}".format(year,month,day,hour,minute)
 
-def choose_in_file(file_to_choose):
+def make_dictionary_from_list(file_as_list):
+    dictionary_from_list = {}
+    for i in range(1, len(file_as_list)):
+        dictionary_from_list[str(i)] = file_as_list[i][0]
+    return dictionary_from_list
 
-    file_as_list = load_file(file_to_choose)
-    
-    for key in range(1,len(file_as_list)):
-        print("Enter {} for {}".format(key,file_as_list[key][0]))
+def choose_in_dictionary(args):
 
-    menu = input("\n Choose an item or add a new one \t")
+    print("\n")
+    for key in sorted(args):
+        print("\t* {}   \t{}".format(key, args[key]))
 
-    try:
-        return file_as_list[int(menu)][0]
-    except Exception:
-        with open(file_to_choose, 'a', newline='') as g:
-            g.write(menu)
-            g.close()
-        return menu
+    menu = input("\n\tEnter your choice\t")
 
-def choose_in_dictionary(states):
-
-    for key in states:
-        print("Enter {} for {}".format(key, states[key]))
-
-    menu = input("\n Choose an item\t")
-
-    if menu not in states:
-        choose_in_dictionary(states)
+    if menu not in args:
+        choose_in_dictionary(args)
     else:
         return menu
+
+def choose_in_file(file_to_choose):
+
+    file_as_dictionary = make_dictionary_from_list(load_file(file_to_choose))
+
+    
+    choose_in_dictionary(file_as_dictionary)
 
 def append_file(file_name, entry):
     with open(file_name, 'a', newline='') as f:
@@ -455,21 +459,14 @@ def file_project(project_id):
     project_filed = delete_project(project_id, True)
     print("{} filed".format(project_filed))
 
-def argument_parser():
-    myepilog = 'sp.py Copyright (C) 2014  Miguel de Luis Espinosa.\n This program comes with ABSOLUTELY NO WARRANTY. \n This is free software, and you are welcome to redistribute it under certain conditions'
-    parser = argparse.ArgumentParser(description=' Simple personal poductivity app', epilog= myepilog)
-    arguments = {"-aa":"add a new action", "-ap": "add a new project", "-ac":"add a new context", 
-                 "-aP" : "add a new person", "-ar" : "add reminder",
-                 "-sr" : "show reminders", "-sa": "show actions by project", "-da" : "set action as done",
-                 "-wr" : "weekly review", "-fp": "file project and its actions", "-fa": "file action", 
-                 "-ea" : "edit action", "-ep" : "edit project", "-dela": "delete action",
-                 "-delp" : "delete project and its actions", "-sp":"show projects"}
-   
-    for key in arguments:
-        parser.add_argument(key, action = 'store_true', help= arguments[key])
-      
-    args = parser.parse_args()
+def show_menu(arguments):
+    choice = choose_in_dictionary(arguments)
+    evaluate_menu(choice)
 
+def evaluate_menu(choice):
+    print(lame_excuse)
+
+def evaluate_arguments(args):
     if args.aa:
         add_action()
     elif args.ap:
@@ -517,9 +514,20 @@ def argument_parser():
     elif args.sp:
         show_projects()
     else:
-        print(lame_excuse) 
+        show_menu(arguments)
+
+def argument_parser(arguments):
+    myepilog = 'sp.py Copyright (C) 2014  Miguel de Luis Espinosa.\n This program comes with ABSOLUTELY NO WARRANTY. \n This is free software, and you are welcome to redistribute it under certain conditions'
+    parser = argparse.ArgumentParser(description=' Simple personal poductivity app', epilog= myepilog)
+       
+    for key in arguments:
+        parser.add_argument(key, action = 'store_true', help= arguments[key])
+      
+    args = parser.parse_args()
+
+    evaluate_arguments(args)
 
 backup_file_names = generate_backup_file_names(backup_directory, file_names)
 load_default_settings(settings_file)
-argument_parser()
+argument_parser(arguments)
 
