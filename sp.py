@@ -475,7 +475,7 @@ def file_action():
     deleted_action = delete_action(action_id, True)
     print("Action filed: \n{}".format(deleted_action))
 
-def do_action():
+def choose_and_do_action():
     actions = load_file(file_names["actions_file"])
     action_id = choose_id("action")
     write_file(file_names["actions_file"], do_action(action_id, actions))
@@ -509,12 +509,13 @@ def choose_and_delete_project():
 
 def show_menu():
     choice = choose_in_dictionary(arguments)
-    modified_choice = choice[1:]
     print("\n\tYou have chosen to {}".format(arguments[choice]))
-    evaluate_menu(modified_choice)
+    evaluate_menu(choice[1:])
 
 def evaluate_menu(choice):
+    print("choice {}".format(choice))
     arguments_as_funtion_names[choice]()
+    show_menu()
 
 arguments = {"-aa":"add a new action", "-ap": "add a new project", "-ac":"add a new context", 
                  "-aP" : "add a new person", "-ar" : "add reminder",
@@ -522,34 +523,38 @@ arguments = {"-aa":"add a new action", "-ap": "add a new project", "-ac":"add a 
                  "-wr" : "do a weekly review", "-fp": "file project and its actions", "-fa": "file action", 
                  "-ea" : "edit action", "-ep" : "edit project", "-dela": "delete action",
                  "-delp" : "delete project and its actions", "-sp":"show projects",
-                 "-im" : "show interactive menu"}
+                 "-im" : "show interactive menu", "-quit":"exit application, useful in interactive mode"}
 
 arguments_as_funtion_names = {"aa":add_action, "ap":add_project, "ac":add_context,
                               "aP":add_person, "ar":add_reminder,
-                              "sr":show_reminders, "sa":show_actions, "doa":do_action,
+                              "sr":show_reminders, "sa":show_actions, "doa":choose_and_do_action,
                               "wr":weekly_review, "fp":choose_and_file_project, "fa":file_action,
                               "ea":edit_action, "ep":choose_and_edit_project, "dela":choose_and_delete_action,
-                              "delp":choose_and_delete_project, "sp":show_projects, "im":show_menu}
+                              "delp":choose_and_delete_project, "sp":show_projects, "im":show_menu, "quit":quit}
 
 def evaluate_arguments(args):
     dict_args = vars(args)
+    print(dict_args)
+    found_argument = False
     for key in dict_args:
-        if dict_args[key] != None:
+        if dict_args[key]:
+            print("suspicious"+key)
             arguments_as_funtion_names[key]()
+            found_argument = True
+            break
+    if not found_argument:
+        show_menu()
 
 def argument_parser(arguments):
     myepilog = 'sp.py Copyright (C) 2014  Miguel de Luis Espinosa.\n This program comes with ABSOLUTELY NO WARRANTY. \n This is free software, and you are welcome to redistribute it under certain conditions'
     parser = argparse.ArgumentParser(description=' Simple personal poductivity app', epilog= myepilog)
-    parser.set_defaults(im="im")
-           
     for key in arguments:
-        parser.add_argument(key, action = 'store_const', const= key[1:], help= arguments[key])
+        parser.add_argument(key, action = 'store_true', help= arguments[key])
       
     args = parser.parse_args()
-
+    print(args)
     evaluate_arguments(args)
 
 backup_file_names = generate_backup_file_names(backup_directory, file_names)
 load_default_settings(settings_file)
 argument_parser(arguments)
-
