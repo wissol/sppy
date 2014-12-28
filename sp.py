@@ -344,7 +344,7 @@ def show_actions():
                 if this_pa[-2] != "":
                     print("\t\tNotes: {}".format(this_pa[-2]))
                 print("\n\t" + "-" * 80 + "\n")
-        print("\n\t" + "=" * 80 + "\n")
+            print("\n\t" + "=" * 80 + "\n")
     return
 
 def show_projects():
@@ -492,10 +492,40 @@ def choose_and_edit_action():
     action_id = choose_id("action")
     edit_action(action_id)
 
+def update_list(value_searched, column_to_search, column_to_edit, datum, list_to_update):
+    for i in range(0, len(list_to_update)):
+        if value_searched == list_to_update[i][column_to_search]:
+            list_to_update[i][column_to_edit] = datum
+    return list_to_update
+
+def edit_project(project_id):
+    # get project
+    projects = load_file(file_names["projects_file"])
+    project_to_edit = ""
+    for i in range(0, len(projects)):
+        if projects[i][-1] == project_id:
+            project_to_edit = projects.pop(i)
+            break
+    # display edit menu
+    print(project_to_edit)
+    column = input("Choose column to edit:\t")
+    datum = input("Introduce new data")
+    # change data
+    project_to_edit[int(column)] = datum
+    if column == "0": #changing the name of a project
+        project_actions_ids = gather_project_actions(project_id)
+        actions_list = load_file(file_names["actions_file"])
+        for i in project_actions_ids:
+            updated_actions = update_list(i, -1, 1, datum, actions_list)
+        write_file(file_names['actions_file'], updated_actions)
+        backup_file(file_names['actions_file'], backup_file_names["backup_file_actions_file"])
+    # save and backup
+    write_file(file_names['projects_file'], projects)
+    append_new_entry_to_file(project_to_edit, file_names["projects_file"], backup_file_names["backup_file_projects_file"])
+
 def choose_and_edit_project():
     project_id = choose_id("project")
-    # edit_project(project_id)
-    print(lame_excuse)
+    edit_project(project_id)
 
 def choose_and_delete_action():
     action_id = choose_id("action")
