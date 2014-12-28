@@ -129,7 +129,8 @@ def make_dictionary_from_list(file_as_list):
     return dictionary_from_list
 
 def choose_in_dictionary(args):
-
+    #returns a list containing the chosen key and the object referenced by the key
+    chosen_dict = []
     print("\n")
     for key in sorted(args):
         print("\t* {}   \t{}".format(key, args[key]))
@@ -139,7 +140,9 @@ def choose_in_dictionary(args):
     if menu not in args:
         choose_in_dictionary(args)
     else:
-        return menu
+        chosen_dict.append(menu)
+        chosen_dict.append(args[menu])
+        return chosen_dict
 
 def choose_in_file(file_to_choose):
 
@@ -194,15 +197,16 @@ def add_action():
         action.append(datetime.today())
         #Project 1
         print("Project this action belongs to")
-        action.append(choose_in_file(file_names["projects_file"]))       
+        project_chosen = choose_in_file(file_names["projects_file"])
+        action.append(project_chosen.pop())       
         #Description 2
         action.append(input("\n Short Description: \t").strip(' ').replace(",",";")) # commas replaced with semicolons.
         # Context 3
         print("Context of this action")        
-        action.append(choose_in_file(file_names["contexts_file"]))
+        action.append(choose_in_file(file_names["contexts_file"]).pop())
         # State 4
         print("State")
-        action.append(choose_in_dictionary(states))
+        action.append(choose_in_dictionary(states)[0]) # I want the key in states
         # State Modified date 5
         action.append(datetime.today())
         # date due 6
@@ -210,7 +214,7 @@ def add_action():
         # person 7
         if action[4] == "w" or action[4] == "d":
             print("\t Person associated with this action:\n")
-            action.append(choose_in_file(file_names["people_file"]))
+            action.append(choose_in_file(file_names["people_file"]).pop())
         else:
             action.append("")
         # Notes 8
@@ -533,11 +537,9 @@ arguments_as_funtion_names = {"aa":add_action, "ap":add_project, "ac":add_contex
 
 def evaluate_arguments(args):
     dict_args = vars(args)
-    print(dict_args)
     found_argument = False
     for key in dict_args:
         if dict_args[key]:
-            print("suspicious"+key)
             arguments_as_funtion_names[key]()
             found_argument = True
             break
@@ -551,7 +553,6 @@ def argument_parser(arguments):
         parser.add_argument(key, action = 'store_true', help= arguments[key])
       
     args = parser.parse_args()
-    print(args)
     evaluate_arguments(args)
 
 backup_file_names = generate_backup_file_names(backup_directory, file_names)
