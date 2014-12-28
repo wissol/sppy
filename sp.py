@@ -145,8 +145,7 @@ def choose_in_file(file_to_choose):
 
     file_as_dictionary = make_dictionary_from_list(load_file(file_to_choose))
 
-    
-    choose_in_dictionary(file_as_dictionary)
+    return choose_in_dictionary(file_as_dictionary)
 
 def append_file(file_name, entry):
     with open(file_name, 'a', newline='') as f:
