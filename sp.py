@@ -542,8 +542,8 @@ def choose_and_delete_project():
 
 def show_menu():
     choice = choose_in_dictionary(arguments)
-    print("\n\tYou have chosen to {}".format(arguments[choice]))
-    evaluate_menu(choice[1:])
+    print("\n\tYou have chosen to {}".format(arguments[choice[0]]))
+    evaluate_menu(choice[0][1:])
 
 def evaluate_menu(choice):
     print("choice {}".format(choice))
