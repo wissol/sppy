@@ -408,7 +408,7 @@ def delete_action(action_id, to_archive):
     if found:
         write_file(file_names['actions_file'], actions)
         backup_file(file_names['actions_file'],backup_file_names["backup_file_" + 'actions_file']) # perhaps that's a bit over the top
-        return found_action
+    return found_action
 
 def delete_project(project_id, to_archive):
     found = False
