@@ -350,7 +350,7 @@ def show_actions():
 
 def show_projects():
     projects = load_file(file_names["projects_file"])
-    for i in range(0, len(projects)):
+    for i in range(1, len(projects)):
         project_actions = filter_file(projects[i][0],1,file_names["actions_file"])
         number_actions = len(project_actions)
         done_actions = 0
@@ -402,7 +402,7 @@ def delete_action(action_id):
             backup_file(file_names['actions_file'],backup_file_names["backup_file_" + 'actions_file']) # perhaps that's a bit over the top
             return found_action
 
-def delete_project(project_id, to_archive):
+def delete_project(project_id):
     found = False
     found_project = []
     backup_file(file_names['projects_file'],backup_file_names["backup_file_" + 'projects_file'])
@@ -410,16 +410,9 @@ def delete_project(project_id, to_archive):
     for i in range(0, len(projects)):
         if projects[i][-1] == project_id:
             found_project = projects.pop(i)
-            found = True
-            if to_archive:
-                archive_entry(found_project)
-            else:
-                trash_file(found_project)
-            break
-    if found:
-        write_file(file_names['projects_file'], projects)
-        backup_file(file_names['projects_file'],backup_file_names["backup_file_" + 'projects_file']) # perhaps that's a bit over the top
-        return found_project
+            write_file(file_names['projects_file'], projects)
+            backup_file(file_names['projects_file'],backup_file_names["backup_file_" + 'projects_file']) # perhaps that's a bit over the top
+            return found_project
 
 def get_action(action_id):
     actions = load_file(file_names["actions_file"])
@@ -456,20 +449,16 @@ def gather_project_actions(project_id):
             project_actions_ids.append(all_actions[i][-1])
     return project_actions_ids
 
-def file_project(project_id):
-    project_actions_ids = gather_project_actions(project_id)
-    print(project_actions_ids)
-    delete_project_actions(project_actions_ids, True)
-    project_filed = delete_project(project_id, True)
-    print("{} filed".format(project_filed))
-
 def weekly_review():
     print(lame_excuse)
 
-def file_action():
-    action_id = choose_id("action")   
+def choose_and_file_action():
+    action_id = choose_id("action")
+    file_action(action_id)
+
+def file_action(action_id):    
     deleted_action = delete_action(action_id)
-    append_new_entry_to_file(file_names[archives_file], deleted_action)
+    append_file(file_names["archives_file"], deleted_action)
     print("Action filed: \n{}".format(deleted_action))
 
 def choose_and_do_action():
@@ -477,10 +466,6 @@ def choose_and_do_action():
     action_id = choose_id("action")
     write_file(file_names["actions_file"], do_action(action_id, actions))
     backup_file(file_names["actions_file"], backup_file_names["backup_file_"+ "actions_file"])
-
-def choose_and_file_project():
-    project_id = choose_id("project")
-    file_project(project_id)
 
 def choose_and_edit_action():
     action_id = choose_id("action")
@@ -527,14 +512,29 @@ def choose_and_delete_action():
     trash_file(deleted_action)
     print("Action deleted: \n{}".format(deleted_action))
 
-def choose_and_delete_project():
+def delete_project_and_its_actions():
+    project_and_its_actions = {}
     project_id = choose_id("project")
     project_actions_ids = gather_project_actions(project_id)
-    print(project_actions_ids)
-    deleted_actions = map(delete_action, project_actions_ids)
-    map(trash_file, deleted_actions)
-    project_filed = delete_project(project_id, False)
-    print("{} deleted".format(project_filed))
+    project_and_its_actions["actions"] = [delete_action(x) for x in project_actions_ids]
+    project_and_its_actions["projects"] = delete_project(project_id)
+    return project_and_its_actions
+
+def choose_and_file_project():
+    deleted_project_and_actions = delete_project_and_its_actions()
+    deleted_project = deleted_project_and_actions["projects"]
+    deteted_actions = deleted_project_and_actions["actions"]
+    [append_file(file_names["archives_file"], deleted_action) for deleted_action in deleted_actions]
+    append_new_entry_to_file(deleted_project, file_names["archives_file"], backup_file_names["backup_file_archives_file"])
+    print("{} filed".format(deleted_project))
+
+def choose_and_delete_project():
+    deleted_project_and_actions = delete_project_and_its_actions()
+    deleted_project = deleted_project_and_actions["projects"]
+    deteted_actions = deleted_project_and_actions["actions"]
+    [trash_file(deleted_action) for deleted_action in deleted_actions]
+    trash_file(deleted_project)
+    print("{} deleted".format(deleted_project))
 
 def show_menu():
     choice = choose_in_dictionary(arguments)
@@ -569,7 +569,7 @@ def argument_parser(arguments):
 arguments_as_funtion_names = {"aa":add_action, "ap":add_project, "ac":add_context,
                               "aP":add_person, "ar":add_reminder,
                               "sr":show_reminders, "sa":show_actions, "doa":choose_and_do_action,
-                              "wr":weekly_review, "fp":choose_and_file_project, "fa":file_action,
+                              "wr":weekly_review, "fp":choose_and_file_project, "fa":choose_and_file_action,
                               "ea":edit_action, "ep":choose_and_edit_project, "dela":choose_and_delete_action,
                               "delp":choose_and_delete_project, "sp":show_projects, "im":show_menu, "quit":quit}
 
