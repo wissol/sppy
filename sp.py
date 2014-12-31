@@ -8,10 +8,11 @@ file_names = {"people_file":"people.csv","projects_file":"p.csv",
 
 arguments = {"-aa":"add a new action", "-ap": "add a new project", "-ac":"add a new context", 
                  "-aP" : "add a new person", "-ar" : "add reminder",
-                 "-sr" : "show reminders", "-sa": "show actions by project", "-da" : "set action as done",
-                 "-wr" : "weekly review", "-fp": "file project and its actions", "-fa": "file action", 
+                 "-sr" : "show reminders", "-sa": "show actions by project", "-doa" : "set an action as done",
+                 "-wr" : "do a weekly review", "-fp": "file project and its actions", "-fa": "file action", 
                  "-ea" : "edit action", "-ep" : "edit project", "-dela": "delete action",
-                 "-delp" : "delete project and its actions", "-sp":"show projects"}
+                 "-delp" : "delete project and its actions", "-sp":"show projects",
+                 "-im" : "show interactive menu", "-quit":"exit application, useful in interactive mode"}
 
 settings_file = file_names["settings_file"]
 
@@ -390,25 +391,16 @@ def archive_entry(entry):
 def trash_file(entry):
     append_new_entry_to_file(entry, file_names["trash_file"], backup_file_names["backup_file_" + 'trash_file'])
 
-def delete_action(action_id, to_archive):
-    found = False
+def delete_action(action_id):
     found_action = []
     backup_file(file_names['actions_file'],backup_file_names["backup_file_" + 'actions_file'])
     actions = load_file(file_names['actions_file'])
-    print(actions)
     for i in range(0, len(actions)):
         if actions[i][-1] == action_id:
             found_action = actions.pop(i)
-            found = True
-            if to_archive:
-                archive_entry(found_action)
-            else:
-                trash_file(found_action)
-            break
-    if found:
-        write_file(file_names['actions_file'], actions)
-        backup_file(file_names['actions_file'],backup_file_names["backup_file_" + 'actions_file']) # perhaps that's a bit over the top
-    return found_action
+            write_file(file_names['actions_file'], actions)
+            backup_file(file_names['actions_file'],backup_file_names["backup_file_" + 'actions_file']) # perhaps that's a bit over the top
+            return found_action
 
 def delete_project(project_id, to_archive):
     found = False
@@ -429,14 +421,17 @@ def delete_project(project_id, to_archive):
         backup_file(file_names['projects_file'],backup_file_names["backup_file_" + 'projects_file']) # perhaps that's a bit over the top
         return found_project
 
-def edit_action(action_id):
-    # get action
+def get_action(action_id):
     actions = load_file(file_names["actions_file"])
-    action_to_edit = ""
+    found_action = []
     for i in range(0, len(actions)):
         if actions[i][-1] == action_id:
             action_to_edit = actions.pop(i)
-            break
+            return found_action
+
+def edit_action(action_id):
+    # get action
+    action_to_edit = get_action(action_id)
     # display edit menu
     print(action_to_edit)
     column = input("Choose column to edit:\t")
@@ -451,17 +446,15 @@ def gather_project_actions(project_id):
     all_actions = load_file(file_names["actions_file"])
     projects = load_file(file_names["projects_file"])
     project_actions_ids = []
+    project_description = ""
     for i in range(0, len(projects)):
         if projects[i][-1] == project_id:
             project_description = projects[i][0]
-    for i in range(0, len(all_actions)):
+            
+    for i in range(1, len(all_actions)):
         if all_actions[i][1] == project_description:
             project_actions_ids.append(all_actions[i][-1])
     return project_actions_ids
-
-def delete_project_actions(project_actions_ids, tofile):
-    for i in range(0, len(project_actions_ids)):
-        delete_action(project_actions_ids[i],tofile)
 
 def file_project(project_id):
     project_actions_ids = gather_project_actions(project_id)
@@ -475,7 +468,8 @@ def weekly_review():
 
 def file_action():
     action_id = choose_id("action")   
-    deleted_action = delete_action(action_id, True)
+    deleted_action = delete_action(action_id)
+    append_new_entry_to_file(file_names[archives_file], deleted_action)
     print("Action filed: \n{}".format(deleted_action))
 
 def choose_and_do_action():
@@ -529,14 +523,16 @@ def choose_and_edit_project():
 
 def choose_and_delete_action():
     action_id = choose_id("action")
-    deleted_action = delete_action(action_id, False)
+    deleted_action = delete_action(action_id)
+    trash_file(deleted_action)
     print("Action deleted: \n{}".format(deleted_action))
 
 def choose_and_delete_project():
     project_id = choose_id("project")
     project_actions_ids = gather_project_actions(project_id)
     print(project_actions_ids)
-    delete_project_actions(project_actions_ids, False)
+    deleted_actions = map(delete_action, project_actions_ids)
+    map(trash_file, deleted_actions)
     project_filed = delete_project(project_id, False)
     print("{} deleted".format(project_filed))
 
@@ -549,21 +545,6 @@ def evaluate_menu(choice):
     print("choice {}".format(choice))
     arguments_as_funtion_names[choice]()
     show_menu()
-
-arguments = {"-aa":"add a new action", "-ap": "add a new project", "-ac":"add a new context", 
-                 "-aP" : "add a new person", "-ar" : "add reminder",
-                 "-sr" : "show reminders", "-sa": "show actions by project", "-doa" : "set an action as done",
-                 "-wr" : "do a weekly review", "-fp": "file project and its actions", "-fa": "file action", 
-                 "-ea" : "edit action", "-ep" : "edit project", "-dela": "delete action",
-                 "-delp" : "delete project and its actions", "-sp":"show projects",
-                 "-im" : "show interactive menu", "-quit":"exit application, useful in interactive mode"}
-
-arguments_as_funtion_names = {"aa":add_action, "ap":add_project, "ac":add_context,
-                              "aP":add_person, "ar":add_reminder,
-                              "sr":show_reminders, "sa":show_actions, "doa":choose_and_do_action,
-                              "wr":weekly_review, "fp":choose_and_file_project, "fa":file_action,
-                              "ea":edit_action, "ep":choose_and_edit_project, "dela":choose_and_delete_action,
-                              "delp":choose_and_delete_project, "sp":show_projects, "im":show_menu, "quit":quit}
 
 def evaluate_arguments(args):
     dict_args = vars(args)
@@ -584,6 +565,13 @@ def argument_parser(arguments):
       
     args = parser.parse_args()
     evaluate_arguments(args)
+
+arguments_as_funtion_names = {"aa":add_action, "ap":add_project, "ac":add_context,
+                              "aP":add_person, "ar":add_reminder,
+                              "sr":show_reminders, "sa":show_actions, "doa":choose_and_do_action,
+                              "wr":weekly_review, "fp":choose_and_file_project, "fa":file_action,
+                              "ea":edit_action, "ep":choose_and_edit_project, "dela":choose_and_delete_action,
+                              "delp":choose_and_delete_project, "sp":show_projects, "im":show_menu, "quit":quit}
 
 backup_file_names = generate_backup_file_names(backup_directory, file_names)
 load_default_settings(settings_file)
