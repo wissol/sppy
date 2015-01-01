@@ -488,7 +488,7 @@ def edit_project(project_id):
     # display edit menu
     print(project_to_edit)
     column = input("Choose column to edit:\t")
-    datum = input("Introduce new data")
+    datum = input("Introduce new data:\t")
     # change data
     project_to_edit[int(column)] = datum
     if column == "0": #changing the name of a project
@@ -517,23 +517,19 @@ def delete_project_and_its_actions():
     project_id = choose_id("project")
     project_actions_ids = gather_project_actions(project_id)
     project_and_its_actions["actions"] = [delete_action(x) for x in project_actions_ids]
-    project_and_its_actions["projects"] = delete_project(project_id)
+    project_and_its_actions["project"] = delete_project(project_id)
     return project_and_its_actions
 
 def choose_and_file_project():
     deleted_project_and_actions = delete_project_and_its_actions()
-    deleted_project = deleted_project_and_actions["projects"]
-    deteted_actions = deleted_project_and_actions["actions"]
-    [append_file(file_names["archives_file"], deleted_action) for deleted_action in deleted_actions]
-    append_new_entry_to_file(deleted_project, file_names["archives_file"], backup_file_names["backup_file_archives_file"])
+    [append_file(file_names["archives_file"], deleted_action) for deleted_action in deleted_project_and_actions["actions"]]
+    append_new_entry_to_file(deleted_project_and_actions["project"], file_names["archives_file"], backup_file_names["backup_file_archives_file"])
     print("{} filed".format(deleted_project))
 
 def choose_and_delete_project():
     deleted_project_and_actions = delete_project_and_its_actions()
-    deleted_project = deleted_project_and_actions["projects"]
-    deteted_actions = deleted_project_and_actions["actions"]
-    [trash_file(deleted_action) for deleted_action in deleted_actions]
-    trash_file(deleted_project)
+    [trash_file(deleted_action) for deleted_action in deleted_project_and_actions["actions"]]
+    trash_file(deleted_project_and_actions["project"])
     print("{} deleted".format(deleted_project))
 
 def show_menu():
@@ -548,14 +544,11 @@ def evaluate_menu(choice):
 
 def evaluate_arguments(args):
     dict_args = vars(args)
-    found_argument = False
     for key in dict_args:
         if dict_args[key]:
             arguments_as_funtion_names[key]()
-            found_argument = True
-            break
-    if not found_argument:
-        show_menu()
+            return True
+    return False
 
 def argument_parser(arguments):
     myepilog = 'sp.py Copyright (C) 2014  Miguel de Luis Espinosa.\n This program comes with ABSOLUTELY NO WARRANTY. \n This is free software, and you are welcome to redistribute it under certain conditions'
@@ -564,7 +557,9 @@ def argument_parser(arguments):
         parser.add_argument(key, action = 'store_true', help= arguments[key])
       
     args = parser.parse_args()
-    evaluate_arguments(args)
+    found_argument = evaluate_arguments(args)
+    if not found_argument:
+        show_menu()
 
 arguments_as_funtion_names = {"aa":add_action, "ap":add_project, "ac":add_context,
                               "aP":add_person, "ar":add_reminder,
