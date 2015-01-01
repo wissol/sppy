@@ -20,11 +20,15 @@ backup_directory = '../sppy/bu' # move to settings
 
 temporary_backup_directory = '/tmp'
 
-if not os.path.exists(backup_directory):
-    os.makedirs(backup_directory)
-
-if not os.path.exists(backup_directory + temporary_backup_directory):
-    os.makedirs(backup_directory + temporary_backup_directory)
+def generate_backup_directories():
+    generated_backup_directories = False
+    if not os.path.exists(backup_directory):
+        os.makedirs(backup_directory)
+        generated_backup_directories = True
+    if not os.path.exists(backup_directory + temporary_backup_directory):
+        os.makedirs(backup_directory + temporary_backup_directory)
+        generated_backup_directories = True
+    return generated_backup_directories
 
 states = {"t":"to do", "x":"done", "d": "delegated to", "w": "waiting for"}
 
@@ -411,26 +415,31 @@ def delete_project(project_id):
         if projects[i][-1] == project_id:
             found_project = projects.pop(i)
             write_file(file_names['projects_file'], projects)
-            backup_file(file_names['projects_file'],backup_file_names["backup_file_" + 'projects_file']) # perhaps that's a bit over the top
+            backup_file(file_names['projects_file'],backup_file_names["backup_file_" + 'projects_file'])
             return found_project
 
 def get_action(action_id):
     actions = load_file(file_names["actions_file"])
+    extracted_action_and_edited_action_list = {}
     found_action = []
     for i in range(0, len(actions)):
         if actions[i][-1] == action_id:
-            action_to_edit = actions.pop(i)
-            return found_action
+            extracted_action_and_edited_action_list["found_action"] = actions.pop(i)
+            extracted_action_and_edited_action_list["edited_actions"] = actions
+            return extracted_action_and_edited_action_list
 
 def edit_action(action_id):
     # get action
-    action_to_edit = get_action(action_id)
+    extracted_action_and_edited_action_list = get_action(action_id)
+    action_to_edit = extracted_action_and_edited_action_list["found_action"]
+    actions = extracted_action_and_edited_action_list["edited_actions"]
     # display edit menu
     print(action_to_edit)
     column = input("Choose column to edit:\t")
     data = input("Introduce new data")
     # change data
     action_to_edit[int(column)] = data
+
     # save and backup
     write_file(file_names['actions_file'], actions)
     append_new_entry_to_file(action_to_edit, file_names["actions_file"], backup_file_names["backup_file_actions_file"])
@@ -472,6 +481,9 @@ def choose_and_edit_action():
     edit_action(action_id)
 
 def update_list(value_searched, column_to_search, column_to_edit, datum, list_to_update):
+    secondlist_to_update[i][column_to_edit] = [datum for i in list_to_update if value_searched == list_to_update[i][column_to_search]]
+    print("second list")
+    print(secondlist_to_update)
     for i in range(0, len(list_to_update)):
         if value_searched == list_to_update[i][column_to_search]:
             list_to_update[i][column_to_edit] = datum
@@ -565,9 +577,10 @@ arguments_as_funtion_names = {"aa":add_action, "ap":add_project, "ac":add_contex
                               "aP":add_person, "ar":add_reminder,
                               "sr":show_reminders, "sa":show_actions, "doa":choose_and_do_action,
                               "wr":weekly_review, "fp":choose_and_file_project, "fa":choose_and_file_action,
-                              "ea":edit_action, "ep":choose_and_edit_project, "dela":choose_and_delete_action,
+                              "ea":choose_and_edit_action, "ep":choose_and_edit_project, "dela":choose_and_delete_action,
                               "delp":choose_and_delete_project, "sp":show_projects, "im":show_menu, "quit":quit}
 
+generate_backup_directories()
 backup_file_names = generate_backup_file_names(backup_directory, file_names)
 load_default_settings(settings_file)
 argument_parser(arguments)
