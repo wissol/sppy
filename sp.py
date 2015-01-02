@@ -458,7 +458,16 @@ def gather_project_actions(project_id):
             project_actions_ids.append(all_actions[i][-1])
     return project_actions_ids
 
-def weekly_review():
+def weekly_review()
+    # Collect notes 
+    # Empty mind
+    # Clear inbox
+    # Review past events
+    # Review Upcoming events
+    # Review to-do actions
+    # Review waiting for / delegated actions
+    # Review empty projects
+    # Review someday actions
     print(lame_excuse)
 
 def choose_and_file_action():
