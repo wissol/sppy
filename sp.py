@@ -201,16 +201,16 @@ def add_action():
         #Date Gathered  0
         action.append(datetime.today())
         #Project 1
-        print("Project this action belongs to")
+        print("\n\tProject this action belongs to:")
         project_chosen = choose_in_file(file_names["projects_file"])
         action.append(project_chosen.pop())       
         #Description 2
-        action.append(input("\n Short Description: \t").strip(' ').replace(",",";")) # commas replaced with semicolons.
+        action.append(input("\n\t Short Description: \t").strip(' ').replace(",",";")) # commas replaced with semicolons.
         # Context 3
-        print("Context of this action")        
+        print("\n\tContext of this action")        
         action.append(choose_in_file(file_names["contexts_file"]).pop())
         # State 4
-        print("State")
+        print("\n\tState")
         action.append(choose_in_dictionary(states)[0]) # I want the key in states
         # State Modified date 5
         action.append(datetime.today())
@@ -223,7 +223,7 @@ def add_action():
         else:
             action.append("")
         # Notes 8
-        action.append(input("\n Write a note if needed: \t").strip(' ').replace(",","."))     
+        action.append(input("\n\tWrite a note if needed: \t").strip(' ').replace(",","."))     
         # id 9
         action_id = "a" + generate_id()
         action.append(action_id)
