@@ -458,7 +458,7 @@ def gather_project_actions(project_id):
             project_actions_ids.append(all_actions[i][-1])
     return project_actions_ids
 
-def weekly_review()
+def weekly_review():
     # Collect notes 
     # Empty mind
     # Clear inbox
