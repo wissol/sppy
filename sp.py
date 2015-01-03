@@ -218,7 +218,7 @@ def add_action():
         action.append(add_deadline("action"))
         # person 7
         if action[4] == "w" or action[4] == "d":
-            print("\t Person associated with this action:\n")
+            print("\n\t Person associated with this action:\n")
             action.append(choose_in_file(file_names["people_file"]).pop())
         else:
             action.append("")
@@ -244,14 +244,14 @@ def add_project():
         # Project -  description 0, date gathered 1, date due 2, notes 3
         project = [] 
         #Description 0
-        project.append(input("\n Description: \t").strip(' ').replace(",",";")) # commas replaced with semicolons.
+        project.append(input("\n\tProject Description: \t").strip(' ').replace(",",";")) # commas replaced with semicolons.
         # check there's no project with the same description
         #Date Gathered  1
         project.append(datetime.today())
         # date due 2
         project.append(add_deadline("project"))        
         # Notes 3
-        project.append(input("\n Write a note if needed: \t").strip(' ').replace(",","."))
+        project.append(input("\n\tWrite a note if needed: \t").strip(' ').replace(",","."))
         # Id 4
         project_id = "p" + generate_id()
         project.append(project_id)
@@ -267,9 +267,9 @@ def add_context():
         context = []
 
         #Name
-        context.append(input("\n Name: \t").strip(' ').replace(",",";"))
+        context.append(input("\n\tName: \t").strip(' ').replace(",",";"))
         #Description
-        context.append(input("\n Description: \t").strip(' ').replace(",",";"))
+        context.append(input("\n\tDescription: \t").strip(' ').replace(",",";"))
         #Id
         context_id = "c" + generate_id()
         context.append(context_id)
@@ -285,7 +285,7 @@ def add_reminder():
         reminder = []
 
         #Description 0
-        reminder.append(input("\n Description: \t").strip(' ').replace(",",";"))
+        reminder.append(input("\n\tDescription: \t").strip(' ').replace(",",";"))
 
         # date due 1
         action.append(add_deadline("reminder"))
@@ -307,10 +307,10 @@ def add_person():
         person = []
 
         #Description 0
-        person.append(input("\n Name: \t").strip(' ').replace(",",";"))
+        person.append(input("\n\tName: \t").strip(' ').replace(",",";"))
 
         # contact_details
-        person.append(input("\n Contact data: \t").strip(' ').replace(",",";"))
+        person.append(input("\n\tContact data: \t").strip(' ').replace(",",";"))
         
         # id
         person_id = "person" + generate_id()
