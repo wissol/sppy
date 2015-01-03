@@ -34,6 +34,9 @@ states = {"t":"to do", "x":"done", "d": "delegated to", "w": "waiting for"}
 
 lame_excuse = "sorry, not implemented yet"
 
+def pretty_date(ugly_date):
+    return ugly_date.strftime("%a %x %X")
+
 def generate_id():
     last_id = load_file("id.csv")
     try:
@@ -199,7 +202,7 @@ def add_action():
         action = [] 
                 
         #Date Gathered  0
-        action.append(datetime.today())
+        action.append(pretty_date(datetime.today()))
         #Project 1
         print("\n\tProject this action belongs to:")
         project_chosen = choose_in_file(file_names["projects_file"])
@@ -213,7 +216,7 @@ def add_action():
         print("\n\tState")
         action.append(choose_in_dictionary(states)[0]) # I want the key in states
         # State Modified date 5
-        action.append(datetime.today())
+        action.append(pretty_date(datetime.today()))
         # date due 6
         action.append(add_deadline("action"))
         # person 7
@@ -247,7 +250,7 @@ def add_project():
         project.append(input("\n\tProject Description: \t").strip(' ').replace(",",";")) # commas replaced with semicolons.
         # check there's no project with the same description
         #Date Gathered  1
-        project.append(datetime.today())
+        project.append(pretty_date(datetime.today()))
         # date due 2
         project.append(add_deadline("project"))        
         # Notes 3
