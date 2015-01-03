@@ -291,11 +291,11 @@ def add_reminder():
         reminder.append(input("\n\tDescription: \t").strip(' ').replace(",",";"))
 
         # date due 1
-        action.append(add_deadline("reminder"))
+        reminder.append(add_deadline("reminder"))
 
         # generate id
         reminder_id = "r" + generate_id()
-        action.append(reminder_id)
+        reminder.append(reminder_id)
 
         # Append entry to file      
         append_new_entry_to_file(reminder, file_names["reminders_file"], backup_file_names["backup_file_" + "reminders_file"])
