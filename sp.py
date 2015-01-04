@@ -179,7 +179,7 @@ def append_new_entry_to_file(entry, work_file, backup_file_name):
     backup_file(work_file, backup_file_name)
     
 def evaluate_loop(thing):
-    answer = input("\n Another {} (n for no)\t".format(thing))
+    answer = input("\n\t Another {} (n for no)\t".format(thing))
     evaluation = True
     if answer != "":
         if answer[0].lower() == "n":
@@ -187,7 +187,7 @@ def evaluate_loop(thing):
     return evaluation
 
 def add_deadline(thing):
-    deadline = input("\n Is this {} under a deadline? Press 'y' to add one\t".format(thing))
+    deadline = input("\n\t Is this {} under a deadline? Press 'y' to add one\t".format(thing))
     if deadline == "y":
         return filter_dates(thing)
     else:
