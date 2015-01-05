@@ -7,7 +7,11 @@ def mylang(var):
         elif lang == "es":
             from language.spanish import dic as mytext 
             mytext[var]
-
+# to add language, follow the next example and add the file language:
+        #elif lang == "ru":
+        #    from language.russian import dic as mytext 
+        #    mytext[var]
+            
     except: # If don find the value will show it in english
         from language.english import dic as mytext
     var = mytext[var]
