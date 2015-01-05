@@ -36,10 +36,6 @@ arguments = {"-aa":"add a new action",
 
 settings_file = file_names["settings_file"]
 
-# backup_directory = '../sppy/bu' # move to settings
-
-# temporary_backup_directory = '/tmp'
-
 def generate_backup_directories():
     generated_backup_directories = False
     if not os.path.exists(backup_directory):
