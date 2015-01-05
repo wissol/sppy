@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import os, csv, shutil, time, argparse, collections
+import argparse, collections, csv, os, shutil, time, 
+
 from datetime import datetime, date
+
+
 from settings import *
 file_names = {"people_file":"people.csv",
               "projects_file":"p.csv",
