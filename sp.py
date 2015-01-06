@@ -1,24 +1,42 @@
+# -*- coding: utf-8 -*-
+
 import os, csv, shutil, time, argparse, collections
 from datetime import datetime, date
+from settings import *
+file_names = {"people_file":"people.csv",
+              "projects_file":"p.csv",
+              "actions_file":"a.csv",
+              "contexts_file":"contexts.csv",
+              "reminders_file":"r.csv", 
+              "archives_file":"archives.csv",
+              "last_id_file":"id.csv", 
+              "trash_file":"trash.csv", 
+              "settings_file":"s.csv"}
 
-file_names = {"people_file":"people.csv","projects_file":"p.csv",
-              "actions_file":"a.csv","contexts_file":"contexts.csv",
-              "reminders_file":"r.csv", "archives_file":"archives.csv",
-              "last_id_file":"id.csv", "trash_file":"trash.csv", "settings_file":"s.csv"}
-
-arguments = {"-aa":"add a new action", "-ap": "add a new project", "-ac":"add a new context", 
-                 "-aP" : "add a new person", "-ar" : "add reminder",
-                 "-sr" : "show reminders", "-sa": "show actions by project", "-doa" : "set an action as done",
-                 "-wr" : "do a weekly review", "-fp": "file project and its actions", "-fa": "file action", 
-                 "-ea" : "edit action", "-ep" : "edit project", "-dela": "delete action",
-                 "-delp" : "delete project and its actions", "-sp":"show projects",
-                 "-im" : "show interactive menu", "-quit":"exit application, useful in interactive mode"}
+arguments = {"-aa":"add a new action", 
+             "-ap": "add a new project", 
+             "-ac":"add a new context", 
+             "-aP" : "add a new person", 
+             "-ar" : "add reminder",
+             "-sr" : "show reminders", 
+             "-sa": "show actions by project", 
+             "-doa" : "set an action as done",
+             "-wr" : "do a weekly review", 
+             "-fp": "file project and its actions", 
+             "-fa": "file action", 
+             "-ea" : "edit action", 
+             "-ep" : "edit project", 
+             "-dela": "delete action",
+             "-delp" : "delete project and its actions", 
+             "-sp":"show projects",
+             "-im" : "show interactive menu", 
+             "-quit":"exit application, useful in interactive mode"}
 
 settings_file = file_names["settings_file"]
 
-backup_directory = '../sppy/bu' # move to settings
+# backup_directory = '../sppy/bu' # move to settings
 
-temporary_backup_directory = '/tmp'
+# temporary_backup_directory = '/tmp'
 
 def generate_backup_directories():
     generated_backup_directories = False
@@ -560,6 +578,9 @@ def show_menu():
     choice = choose_in_dictionary(arguments)
     print("\n\tYou have chosen to {}".format(arguments[choice[0]]))
     evaluate_menu(choice[0][1:])
+    
+def quit():
+    exit()
 
 def evaluate_menu(choice):
     print("choice {}".format(choice))
