@@ -27,3 +27,9 @@ UNFINISHED DRAFT, not suitable for use yet.
 * CSV files as its database (simple, ubiquitous, future proof)
 * Coded in Python 3
 * Command Line interface
+
+
+Español
+=======
+
+Un administrador de tareas sencillo GNU-GPL, aplicación de productividad en Python 3, destinado a implementar GTD y ZTD
