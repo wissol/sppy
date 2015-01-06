@@ -5,6 +5,9 @@ import argparse, collections, csv, os, shutil, time
 from datetime import datetime, date
 
 from settings import *
+
+from language.language import mylang
+
 file_names = {"people_file":"people.csv",
               "projects_file":"p.csv",
               "actions_file":"a.csv",
@@ -15,24 +18,24 @@ file_names = {"people_file":"people.csv",
               "trash_file":"trash.csv", 
               "settings_file":"s.csv"}
 
-arguments = {"-aa":"add a new action", 
-             "-ap": "add a new project", 
-             "-ac":"add a new context", 
-             "-aP" : "add a new person", 
-             "-ar" : "add reminder",
-             "-sr" : "show reminders", 
-             "-sa": "show actions by project", 
-             "-doa" : "set an action as done",
-             "-wr" : "do a weekly review", 
-             "-fp": "file project and its actions", 
-             "-fa": "file action", 
-             "-ea" : "edit action", 
-             "-ep" : "edit project", 
-             "-dela": "delete action",
-             "-delp" : "delete project and its actions", 
-             "-sp":"show projects",
-             "-im" : "show interactive menu", 
-             "-quit":"exit application, useful in interactive mode"}
+arguments = {"-aa":mylang("add_a_new_action"), 
+             "-ap":mylang("add_a_new_project"), 
+             "-ac":mylang("add_a_new_context"), 
+             "-aP":mylang("add_a_new_person"), 
+             "-ar":mylang("add_reminder"),
+             "-sr":mylang("show_reminders"), 
+             "-sa":mylang("show_actions_by_project"), 
+             "-doa":mylang("set_an_action_as_done"),
+             "-wr":mylang("do_a_weekly_review"), 
+             "-fp":mylang("file_project_and_its_actions"), 
+             "-fa":mylang("file_action"), 
+             "-ea":mylang("edit_action"), 
+             "-ep":mylang("edit_project"), 
+             "-dela":mylang("delete_action"),
+             "-delp":mylang("delete_project_and_its_actions"), 
+             "-sp":mylang("show_projects"),
+             "-im":mylang("show_interactive_menu"), 
+             "-quit":mylang("exit_application")}
 
 settings_file = file_names["settings_file"]
 
@@ -46,9 +49,9 @@ def generate_backup_directories():
         generated_backup_directories = True
     return generated_backup_directories
 
-states = {"t":"to do", "x":"done", "d": "delegated to", "w": "waiting for"}
+states = {"t":mylang("to_do"), "x":mylang("done"), "d":mylang("delegated_to"), "w":mylang("waiting_for")}
 
-lame_excuse = "sorry, not implemented yet"
+lame_excuse = mylang("lame_excuse")
 
 def pretty_date(ugly_date):
     return ugly_date.strftime("%a %x %X")
@@ -129,15 +132,15 @@ def filter_dates(thing):
     minute = "0"
     
     while len(day) == 0 or int(day) < 1 or int(day) > 31:
-        day = input("\n Day (dd): \t").strip(', ')
+        day = input(mylang("day")).strip(', ')
 
     while len(month) == 0 or int(month) <1 or int(month) > 12:
-        month = input("\n Month (mm): \t").strip(', ')
+        month = input(mylang("month")).strip(', ')
         
     while len(year) == 0 or int(year) < 2013 or int(year) > 2114:
-        year = input("\n Year (mm): \t").strip(', ')
-
-    add_hour = input("Does this {} must be accomplished before a certain hour? Type y for 'yes'\t".format(thing))
+        year = input(mylang("year")).strip(', ')
+    add_hour = mylang("add_hours")    
+    add_hour = input(mylang("add_hours").format(thing))
     if add_hour == "y":
         while len(hour) == 0 or int(hour) > 24 or int(hour) < 1:
             hour = input("\n Hour (24): \t").strip(', ')
