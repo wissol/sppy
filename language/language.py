@@ -1,0 +1,19 @@
+from settings import language as lang
+
+def mylang(var):
+    try:
+        if lang == "en":
+            from language.english import dic as mytext
+        elif lang == "es":
+            from language.spanish import dic as mytext 
+            mytext[var]
+
+    except: # If don find the value will show it in english
+        from language.english import dic as mytext
+    var = mytext[var]
+    return var
+
+#print(mylang("add_a_new_action"))
+  
+
+  

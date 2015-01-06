@@ -1,0 +1,31 @@
+# -*- coding: utf-8 -*-
+dic = {
+        "add_a_new_action":"add a new action", 
+        "add_a_new_project":"add a new project", 
+        "add_a_new_context":"add a new context", 
+        "add_a_new_person":"add a new person", 
+        "add_reminder":"add reminder",
+        "show_reminders":"show reminders", 
+        "show_actions_by_project":"show actions by project", 
+        "set_an_action_as_done":"set an action as done",
+        "do_a_weekly_review":"do a weekly review", 
+        "file_project_and_its_actions":"file project and its actions", 
+        "file_action":"file action", 
+        "edit_action":"edit action", 
+        "edit_project":"edit project", 
+        "delete_action":"delete action",
+        "delete_project_and_its_actions":"delete project and its actions", 
+        "show_projects":"show projects",
+        "show_interactive_menu":"show interactive menu", 
+        "exit_application":"exit application, useful in interactive mode",
+        ## second gruup
+        "to_do":"to do",
+        "done":"done",
+        "delegated_to":"delegated to",
+        "waiting_for":"waiting for",
+        "lame_excuse":"sorry, not implemented yet",
+        "day":"\n Day (dd): \t",
+        "month":"\n Month (mm): \t",
+        "year":"\n Year (yyyy): \t",
+        "add_hours":"Does this {} must be accomplished before a certain hour? Type y for 'yes'\t"
+}
