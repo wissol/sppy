@@ -3,6 +3,7 @@ venv/
 *~
 *.swp
 backup/
+.settings/
 .pydevproject
 .project
 a.csv 
