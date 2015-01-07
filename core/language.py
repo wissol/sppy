@@ -3,7 +3,7 @@ from settings import language as lang
 def mylang(var):
     try:
         if lang == "en":
-            from language.english import dic as mytext
+            raise Exception("English")
         elif lang == "es":
             from language.spanish import dic as mytext 
             mytext[var]
@@ -16,8 +16,6 @@ def mylang(var):
         from language.english import dic as mytext
     var = mytext[var]
     return var
-
-#print(mylang("add_a_new_action"))
   
 
   
