@@ -6,6 +6,8 @@ backup/
 .settings/
 .pydevproject
 .project
+a.csv 
+id.csv 
 people.csv
 archives.csv
 contexts.csv
