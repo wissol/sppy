@@ -2,7 +2,6 @@ venv/
 *.pyc
 *~
 *.swp
-backup/
 .settings/
 .pydevproject
 .project
@@ -11,4 +10,6 @@ id.csv
 people.csv
 archives.csv
 contexts.csv
+p.csv
+r.csv
 trash.csv
