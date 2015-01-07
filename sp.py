@@ -6,7 +6,7 @@ from datetime import datetime, date
 
 from settings import *
 
-from language.language import mylang
+from core.language import mylang
 
 file_names = {"people_file":"people.csv",
               "projects_file":"p.csv",
