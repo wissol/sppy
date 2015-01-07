@@ -2,9 +2,8 @@ venv/
 *.pyc
 *~
 *.swp
+backup/
 .settings/
-.pydevproject
-.project
 a.csv 
 id.csv 
 people.csv
