@@ -2,4 +2,10 @@
 
 backup_directory = '../sppy/backup'
 temporary_backup_directory = '/tmp'
-language = "en"
+
+## Default Language is "English"
+## Available Languages:
+## English Language (Default) or
+#language = ""
+## For Spanish Language:
+#language = "es"

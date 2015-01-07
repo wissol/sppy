@@ -27,6 +27,17 @@ UNFINISHED DRAFT, not suitable for use yet.
 * CSV files as its database (simple, ubiquitous, future proof)
 * Coded in Python 3
 * Command Line interface
+* Multilanguage
+
+## Settings
+All configurations will be in "settings.py" file
+### Languages:
+ Default Language is "English"
+Available Languages:
+* For English Language (Default), don't do anything or set:
+	* language = ""
+* For Spanish Language, set: 
+	* language = "es"
 
 
 Español
