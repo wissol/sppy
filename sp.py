@@ -584,7 +584,6 @@ def quit():
     exit()
 
 def evaluate_menu(choice):
-    print("choice {}".format(choice))
     arguments_as_funtion_names[choice]()
     show_menu()
 
